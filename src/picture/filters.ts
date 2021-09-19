@@ -3,6 +3,10 @@ export const filtersData = [
     labelName: 'Brightness',
     rangeName: 'brightness',
   },
+  /* {
+    labelName: 'Sepia',
+    rangeName: 'sepia',
+  }, */
   {
     labelName: 'Contrast',
     rangeName: 'contrast',
@@ -15,12 +19,8 @@ export const filtersData = [
     labelName: 'Opacity',
     rangeName: 'opacity',
   },
-  {
-    labelName: 'Sepia',
-    rangeName: 'sepia',
-  },
-  {
+  /* {
     labelName: 'Blur',
     rangeName: 'blur',
-  },
+  }, */
 ];

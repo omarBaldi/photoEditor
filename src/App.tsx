@@ -23,7 +23,7 @@ const App: FC<{}> = () => {
     const elementToUpdate: FilterRangeProps | undefined = copyArr.find(
       (el) => el.rangeName === name
     );
-    elementToUpdate && (elementToUpdate.currentValue = value);
+    elementToUpdate && (elementToUpdate.currentValue = Number(value));
     setUpdatedFiltersData(copyArr);
   };
 
