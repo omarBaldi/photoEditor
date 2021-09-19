@@ -5,7 +5,7 @@ import SidebarProps from './dto';
 const Sidebar: FC<SidebarProps> = ({
   filters,
   emitFilterChangeCallback,
-}: SidebarProps) => {
+}: SidebarProps): JSX.Element => {
   const renderFilterElements = (): JSX.Element[] => {
     return filters.map((currentFilter, index) => {
       return (
@@ -17,12 +17,7 @@ const Sidebar: FC<SidebarProps> = ({
     });
   };
 
-  return (
-    <div>
-      <h1>This is the sidebar</h1>
-      {renderFilterElements()}
-    </div>
-  );
+  return <div>{renderFilterElements()}</div>;
 };
 
 export default Sidebar;
