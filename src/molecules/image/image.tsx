@@ -5,12 +5,18 @@ const imageURL: string =
   'https://images.pexels.com/photos/4560610/pexels-photo-4560610.jpeg?auto=compress&cs=tinysrgb&dpr=2&w=500';
 
 const Image: FC<ImageProps> = ({ filtersToApply }: ImageProps): JSX.Element => {
-  const imageRef = useRef<HTMLImageElement>(null);
+  const imageRef: React.RefObject<HTMLImageElement> =
+    useRef<HTMLImageElement>(null);
+  const isInitialMount: React.MutableRefObject<boolean> = useRef(true);
 
   useEffect(() => {
-    const imageDOMElement: HTMLImageElement | null = imageRef.current;
-    imageDOMElement && applyFiltersToImage(imageDOMElement);
-  }, [filtersToApply]);
+    if (isInitialMount.current) {
+      isInitialMount.current = false;
+    } else {
+      const imageDOMElement: HTMLImageElement | null = imageRef.current;
+      imageDOMElement && applyFiltersToImage(imageDOMElement);
+    }
+  });
 
   const applyFiltersToImage = (element: HTMLImageElement) => {
     const imageFilters: string = filtersToApply
