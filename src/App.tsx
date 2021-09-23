@@ -1,10 +1,11 @@
 import { FC, useState } from 'react';
 import { FilterRangeProps } from './molecules/filter-range';
 import { Sidebar } from './organisms/sidebar';
-import { Image, ImageProps } from './molecules/image';
+import { Image } from './molecules/image';
 import { filtersData } from './picture/filters';
 import { FilterType } from './molecules/filter-range/dto';
 import { filtersToApplyI } from './molecules/image/dto';
+import Style from './App.module.scss';
 
 const App: FC<{}> = () => {
   const [updatedFiltersData, setUpdatedFiltersData] = useState<
@@ -64,17 +65,19 @@ const App: FC<{}> = () => {
 
   return (
     <div className='App'>
-      <Sidebar
-        {...{
-          filters: updatedFiltersData,
-          emitFilterChangeCallback: handleFilterChange,
-        }}
-      />
-      <Image
-        {...{
-          filtersToApply: getImageFilters(),
-        }}
-      />
+      <div className={Style.mainContainer}>
+        <Sidebar
+          {...{
+            filters: updatedFiltersData,
+            emitFilterChangeCallback: handleFilterChange,
+          }}
+        />
+        <Image
+          {...{
+            filtersToApply: getImageFilters(),
+          }}
+        />
+      </div>
     </div>
   );
 };

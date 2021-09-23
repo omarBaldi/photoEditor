@@ -1,0 +1,9 @@
+.imageContainer {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  .imageElement {
+    height: calc(100vh - 10rem);
+    width: 75%;
+  }
+}

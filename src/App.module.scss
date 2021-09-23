@@ -1,0 +1,18 @@
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+body,
+html {
+  font-family: 'Lato', sans-serif;
+}
+
+.mainContainer {
+  display: grid;
+  grid-template-columns: 400px 1fr;
+  height: 100vh;
+}

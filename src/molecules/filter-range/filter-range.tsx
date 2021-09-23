@@ -1,5 +1,6 @@
 import { FC } from 'react';
 import FilterRangeProps from './dto';
+import Style from './filter-range.module.scss';
 
 const FilterRange: FC<FilterRangeProps> = ({
   labelName,
@@ -10,8 +11,10 @@ const FilterRange: FC<FilterRangeProps> = ({
   callbackFunc,
 }: FilterRangeProps) => {
   return (
-    <>
-      <label htmlFor={rangeName}>{labelName}</label>
+    <div className={Style.filterRangeContainer}>
+      <label className={Style.filterRangeLabel} htmlFor={rangeName}>
+        {labelName}
+      </label>
       <input
         {...{
           type: 'range',
@@ -22,8 +25,7 @@ const FilterRange: FC<FilterRangeProps> = ({
           onChange: callbackFunc,
         }}
       />
-      <div>Current value: {currentValue}</div>
-    </>
+    </div>
   );
 };
 

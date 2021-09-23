@@ -1,6 +1,7 @@
 import { FC, useEffect, useRef } from 'react';
 import { ImageProps } from '.';
 import { FilterType } from '../filter-range/dto';
+import Style from './image.module.scss';
 
 const imageURL: string =
   'https://images.pexels.com/photos/4560610/pexels-photo-4560610.jpeg?auto=compress&cs=tinysrgb&dpr=2&w=500';
@@ -49,28 +50,16 @@ const Image: FC<ImageProps> = ({ filtersToApply }: ImageProps): JSX.Element => {
       .toString()
       .replaceAll(',', ' ');
 
-    /* const imageFilters: string = filtersToApply
-      .map(({ name, value, type }: { name: string; value: number, type: FilterType | undefined }): string => {
-        return `${name}(${value.toString()}%)`;
-      })
-      .toString()
-      .replaceAll(',', ' ');*/
     element.style.filter = `${imageFilters}`;
   };
 
   return (
-    <div
-      style={{
-        display: 'flex',
-        justifyContent: 'center',
-        alignItems: 'center',
-      }}
-    >
+    <div className={Style.imageContainer}>
       <img
         ref={imageRef}
         src={imageURL}
         alt=''
-        style={{ height: '500px', width: '600px' }}
+        className={Style.imageElement}
       />
     </div>
   );

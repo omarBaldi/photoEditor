@@ -1,6 +1,7 @@
 import { FC } from 'react';
 import { FilterRange } from '../../molecules/filter-range';
 import SidebarProps from './dto';
+import Styles from './sidebar.module.scss';
 
 const Sidebar: FC<SidebarProps> = ({
   filters,
@@ -17,7 +18,9 @@ const Sidebar: FC<SidebarProps> = ({
     });
   };
 
-  return <div>{renderFilterElements()}</div>;
+  return (
+    <div className={Styles.sidebarContainer}>{renderFilterElements()}</div>
+  );
 };
 
 export default Sidebar;
