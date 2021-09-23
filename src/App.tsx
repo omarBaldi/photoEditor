@@ -1,16 +1,29 @@
 import { FC, useState } from 'react';
 import { FilterRangeProps } from './molecules/filter-range';
 import { Sidebar } from './organisms/sidebar';
-import { Image } from './molecules/image';
+import { Image, ImageProps } from './molecules/image';
 import { filtersData } from './picture/filters';
+import { FilterType } from './molecules/filter-range/dto';
+import { filtersToApplyI } from './molecules/image/dto';
 
 const App: FC<{}> = () => {
   const [updatedFiltersData, setUpdatedFiltersData] = useState<
     FilterRangeProps[]
   >(
     filtersData.reduce(
-      (acc, curr: { labelName: string; rangeName: string }) => {
-        const newCurr = { ...curr, currentValue: 0 } as FilterRangeProps;
+      (
+        acc,
+        curr: {
+          labelName: string;
+          rangeName: string;
+          type: FilterType;
+          defaultValue?: number;
+        }
+      ) => {
+        const newCurr = {
+          ...curr,
+          currentValue: curr.defaultValue ?? 0,
+        } as FilterRangeProps;
         return [...acc, newCurr];
       },
       [] as FilterRangeProps[]
@@ -27,10 +40,26 @@ const App: FC<{}> = () => {
     setUpdatedFiltersData(copyArr);
   };
 
-  const getImageFilters = (): { name: string; value: number }[] => {
+  const retrieveTypeByRangeName = (
+    currentRangeName: string
+  ): FilterType | undefined => {
+    return (
+      filtersData.find((el) => el.rangeName === currentRangeName)?.type ??
+      undefined
+    );
+  };
+
+  const getImageFilters = (): filtersToApplyI[] => {
     return updatedFiltersData.reduce((acc, curr: FilterRangeProps) => {
-      return [...acc, { name: curr.rangeName, value: curr.currentValue }];
-    }, [] as { name: string; value: number }[]);
+      return [
+        ...acc,
+        {
+          name: curr.rangeName,
+          value: curr.currentValue,
+          type: retrieveTypeByRangeName(curr.rangeName),
+        },
+      ];
+    }, [] as filtersToApplyI[]);
   };
 
   return (
