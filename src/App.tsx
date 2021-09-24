@@ -6,6 +6,7 @@ import { filtersData } from './picture/filters';
 import { FilterType } from './molecules/filter-range/dto';
 import { filtersToApplyI } from './molecules/image/dto';
 import Style from './App.module.scss';
+import { LoginPage } from './pages/login';
 
 const App: FC<{}> = () => {
   const initializedFilterValues = (): FilterRangeProps[] => {
@@ -68,6 +69,8 @@ const App: FC<{}> = () => {
       ];
     }, [] as filtersToApplyI[]);
   };
+
+  return <LoginPage />;
 
   return (
     <div className='App'>
