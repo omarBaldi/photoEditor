@@ -2,4 +2,12 @@
   background-color: #222831;
   color: #ffff;
   padding: 3rem;
+  .buttonContainer {
+    display: flex;
+    justify-content: center;
+    .buttons {
+      display: flex;
+      flex-direction: column;
+    }
+  }
 }
