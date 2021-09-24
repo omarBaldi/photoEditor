@@ -1,9 +1,6 @@
 import { FC } from 'react';
 import { Button } from '../../atoms/button';
-import ButtonProps, {
-  ButtonCategory,
-  ButtonSize,
-} from '../../atoms/button/dto';
+import ButtonProps, { ButtonCategory } from '../../atoms/button/dto';
 import { FilterRange } from '../../molecules/filter-range';
 import SidebarProps from './dto';
 import Styles from './sidebar.module.scss';
@@ -11,6 +8,7 @@ import Styles from './sidebar.module.scss';
 const Sidebar: FC<SidebarProps> = ({
   filters,
   emitFilterChangeCallback,
+  resetFilterValues,
 }: SidebarProps): JSX.Element => {
   const renderFilterElements = (): JSX.Element[] => {
     return filters.map((currentFilter, index) => {
@@ -28,7 +26,7 @@ const Sidebar: FC<SidebarProps> = ({
       [
         {
           labelText: 'Cancel',
-          callbackFunc: () => console.log('Cancel button clicked'),
+          callbackFunc: resetFilterValues,
           category: ButtonCategory.SECONDARY,
         },
         {

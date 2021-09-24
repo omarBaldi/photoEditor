@@ -5,6 +5,7 @@ type SidebarProps = {
   emitFilterChangeCallback: any;
   //buttonSave
   //buttonCancel
+  resetFilterValues?: () => void;
 };
 
 export default SidebarProps;

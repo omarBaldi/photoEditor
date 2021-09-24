@@ -8,10 +8,8 @@ import { filtersToApplyI } from './molecules/image/dto';
 import Style from './App.module.scss';
 
 const App: FC<{}> = () => {
-  const [updatedFiltersData, setUpdatedFiltersData] = useState<
-    FilterRangeProps[]
-  >(
-    filtersData.reduce(
+  const initializedFilterValues = (): FilterRangeProps[] => {
+    return filtersData.reduce(
       (
         acc,
         curr: {
@@ -28,8 +26,16 @@ const App: FC<{}> = () => {
         return [...acc, newCurr];
       },
       [] as FilterRangeProps[]
-    )
-  );
+    );
+  };
+
+  const [updatedFiltersData, setUpdatedFiltersData] = useState<
+    FilterRangeProps[]
+  >(initializedFilterValues);
+
+  const resetValues = () => {
+    setUpdatedFiltersData(initializedFilterValues);
+  };
 
   const handleFilterChange = (e: any): void => {
     const { name, value } = e.target;
@@ -70,6 +76,7 @@ const App: FC<{}> = () => {
           {...{
             filters: updatedFiltersData,
             emitFilterChangeCallback: handleFilterChange,
+            resetFilterValues: resetValues,
           }}
         />
         <Image
