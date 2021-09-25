@@ -1,95 +1,64 @@
 import { FC, useState } from 'react';
-import { FilterRangeProps } from './molecules/filter-range';
-import { Sidebar } from './organisms/sidebar';
-import { Image } from './molecules/image';
-import { filtersData } from './picture/filters';
-import { FilterType } from './molecules/filter-range/dto';
-import { filtersToApplyI } from './molecules/image/dto';
-import Style from './App.module.scss';
 import { LoginPage } from './pages/login';
+import { Switch, Route, Redirect } from 'react-router-dom';
+import { Homepage } from './pages/homepage';
 
 const App: FC<{}> = () => {
-  const initializedFilterValues = (): FilterRangeProps[] => {
-    return filtersData.reduce(
-      (
-        acc,
-        curr: {
-          labelName: string;
-          rangeName: string;
-          type: FilterType;
-          defaultValue?: number;
-        }
-      ) => {
-        const newCurr = {
-          ...curr,
-          currentValue: curr.defaultValue ?? 0,
-        } as FilterRangeProps;
-        return [...acc, newCurr];
+  const [userAuthenticated, setUserAuthenticated] = useState<boolean>(true);
+
+  const renderRoutes = () => {
+    interface RouteI {
+      path: string;
+      component: JSX.Element;
+      requiresAuth: boolean;
+    }
+
+    const routes: RouteI[] = [
+      {
+        path: '/login',
+        component: <LoginPage />,
+        requiresAuth: false,
       },
-      [] as FilterRangeProps[]
-    );
-  };
+      {
+        path: '/register',
+        component: <div>Register page</div>,
+        requiresAuth: false,
+      },
+      {
+        path: '/',
+        component: <Homepage />,
+        requiresAuth: true,
+      },
+    ];
 
-  const [updatedFiltersData, setUpdatedFiltersData] = useState<
-    FilterRangeProps[]
-  >(initializedFilterValues);
+    const newRoutes = routes.reduce((acc, curr: RouteI) => {
+      /* 
+        Looping through every routes and if the user is authenticated 
+        render only the photo editor page, othwerise render login and register page.
+      */
 
-  const resetValues = () => {
-    setUpdatedFiltersData(initializedFilterValues);
-  };
+      ((userAuthenticated && curr.requiresAuth) ||
+        (!userAuthenticated && !curr.requiresAuth)) &&
+        acc.push(curr);
 
-  const handleFilterChange = (e: any): void => {
-    const { name, value } = e.target;
-    const copyArr: FilterRangeProps[] = [...updatedFiltersData];
-    const elementToUpdate: FilterRangeProps | undefined = copyArr.find(
-      (el) => el.rangeName === name
-    );
-    elementToUpdate && (elementToUpdate.currentValue = Number(value));
-    setUpdatedFiltersData(copyArr);
-  };
+      return acc;
+    }, [] as RouteI[]);
 
-  const retrieveTypeByRangeName = (
-    currentRangeName: string
-  ): FilterType | undefined => {
     return (
-      filtersData.find((el) => el.rangeName === currentRangeName)?.type ??
-      undefined
+      <Switch>
+        {newRoutes.map(({ path, component }, index) => {
+          return (
+            <Route key={index} {...{ path }}>
+              {component}
+            </Route>
+          );
+        })}
+        <Redirect to={userAuthenticated ? '/' : '/login'}></Redirect>
+      </Switch>
     );
   };
 
-  const getImageFilters = (): filtersToApplyI[] => {
-    return updatedFiltersData.reduce((acc, curr: FilterRangeProps) => {
-      return [
-        ...acc,
-        {
-          name: curr.rangeName,
-          value: curr.currentValue,
-          type: retrieveTypeByRangeName(curr.rangeName),
-        },
-      ];
-    }, [] as filtersToApplyI[]);
-  };
-
-  return <LoginPage />;
-
-  return (
-    <div className='App'>
-      <div className={Style.mainContainer}>
-        <Sidebar
-          {...{
-            filters: updatedFiltersData,
-            emitFilterChangeCallback: handleFilterChange,
-            resetFilterValues: resetValues,
-          }}
-        />
-        <Image
-          {...{
-            filtersToApply: getImageFilters(),
-          }}
-        />
-      </div>
-    </div>
-  );
+  return renderRoutes();
 };
 
 export default App;
