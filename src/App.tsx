@@ -1,14 +1,16 @@
-import { FC, useState } from 'react';
+import { FC, useMemo, useState } from 'react';
 import { LoginPage } from './pages/login';
 import { Switch, Route, Redirect } from 'react-router-dom';
 import { Homepage } from './pages/homepage';
+import { RegisterPage } from './pages/register';
+import './App.css';
 
 const App: FC<{}> = () => {
   const [userAuthenticated, setUserAuthenticated] = useState<boolean>(
     false || !!localStorage.getItem('currentUser')
   );
 
-  const renderRoutes = () => {
+  const renderRoutes = (): JSX.Element => {
     interface RouteI {
       path: string;
       component: JSX.Element;
@@ -25,7 +27,11 @@ const App: FC<{}> = () => {
       },
       {
         path: '/register',
-        component: <div>Register page</div>,
+        component: (
+          <RegisterPage
+            {...{ createAccountCallback: () => setUserAuthenticated(true) }}
+          />
+        ),
         requiresAuth: false,
       },
       {
@@ -71,7 +77,11 @@ const App: FC<{}> = () => {
     );
   };
 
-  return renderRoutes();
+  const memoizedRoutes: JSX.Element = useMemo(renderRoutes, [
+    userAuthenticated,
+  ]);
+
+  return memoizedRoutes;
 };
 
 export default App;

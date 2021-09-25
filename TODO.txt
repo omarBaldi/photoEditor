@@ -1,0 +1,12 @@
+/* Features to develop */
+
+1.
+    Create a file in config directory that export Firebase Utils without importing 
+    them every time in function component.
+
+2.
+    Create custom hook for both authentication and create account since they share
+    the same logic with each other.
+
+3.
+    Implement Firebase storage to store image with CSS filter applied
