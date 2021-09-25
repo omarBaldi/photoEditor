@@ -6,8 +6,15 @@ import { filtersData } from '../../picture/filters';
 import { FilterType } from '../../molecules/filter-range/dto';
 import { filtersToApplyI } from '../../molecules/image/dto';
 import Style from './homepage.module.scss';
+import { Button } from '../../atoms/button';
+import { getAuth, signOut } from 'firebase/auth'; //create file in firebase and export every utils instead of repeating importing
+import { HomepageProps } from '.';
 
-const Homepage: FC<{}> = (): JSX.Element => {
+const Homepage: FC<HomepageProps> = ({
+  signUserOutCallback,
+}: HomepageProps): JSX.Element => {
+  const auth = getAuth();
+
   const initializedFilterValues = (): FilterRangeProps[] => {
     return filtersData.reduce(
       (
@@ -69,6 +76,15 @@ const Homepage: FC<{}> = (): JSX.Element => {
     }, [] as filtersToApplyI[]);
   };
 
+  const signUserOut = async () => {
+    try {
+      await signOut(auth);
+      signUserOutCallback?.();
+    } catch (err) {
+      console.log((err as any).message);
+    }
+  };
+
   return (
     <div className={Style.mainContainer}>
       <Sidebar
@@ -83,6 +99,14 @@ const Homepage: FC<{}> = (): JSX.Element => {
           filtersToApply: getImageFilters(),
         }}
       />
+      <div style={{ position: 'absolute', top: 0, right: 0 }}>
+        <Button
+          {...{
+            labelText: 'Logout',
+            callbackFunc: signUserOut,
+          }}
+        />
+      </div>
     </div>
   );
 };

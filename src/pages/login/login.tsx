@@ -1,12 +1,15 @@
+import { FC, useState } from 'react';
 import {
   signInWithEmailAndPassword,
   User,
   UserCredential,
 } from 'firebase/auth';
-import { FC, useState } from 'react';
 import { auth } from '../../config/firebaseInitialize';
+import { LoginPageProps } from '.';
 
-const LoginPage: FC<{}> = (): JSX.Element => {
+const LoginPage: FC<LoginPageProps> = ({
+  loginCallback,
+}: LoginPageProps): JSX.Element => {
   const [userCredentials, setUserCredentials] = useState<{
     [key: string]: string;
   }>({
@@ -26,7 +29,9 @@ const LoginPage: FC<{}> = (): JSX.Element => {
         password
       );
       const currentUser: User = userCredential.user;
+      localStorage.setItem('currentUser', JSON.stringify(currentUser));
       console.log(currentUser);
+      loginCallback?.();
     } catch (err) {
       console.log((err as any).message);
     }

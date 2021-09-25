@@ -4,7 +4,9 @@ import { Switch, Route, Redirect } from 'react-router-dom';
 import { Homepage } from './pages/homepage';
 
 const App: FC<{}> = () => {
-  const [userAuthenticated, setUserAuthenticated] = useState<boolean>(true);
+  const [userAuthenticated, setUserAuthenticated] = useState<boolean>(
+    false || !!localStorage.getItem('currentUser')
+  );
 
   const renderRoutes = () => {
     interface RouteI {
@@ -16,7 +18,9 @@ const App: FC<{}> = () => {
     const routes: RouteI[] = [
       {
         path: '/login',
-        component: <LoginPage />,
+        component: (
+          <LoginPage {...{ loginCallback: () => setUserAuthenticated(true) }} />
+        ),
         requiresAuth: false,
       },
       {
@@ -26,7 +30,16 @@ const App: FC<{}> = () => {
       },
       {
         path: '/',
-        component: <Homepage />,
+        component: (
+          <Homepage
+            {...{
+              signUserOutCallback: async () => {
+                await localStorage.removeItem('currentUser');
+                setUserAuthenticated(false);
+              },
+            }}
+          />
+        ),
         requiresAuth: true,
       },
     ];
