@@ -1,4 +1,4 @@
-import { FC } from 'react';
+import { FC, useEffect, useState } from 'react';
 import { Button } from '../../atoms/button';
 import ButtonProps, { ButtonCategory } from '../../atoms/button/dto';
 import { FilterRange } from '../../molecules/filter-range';
@@ -9,6 +9,9 @@ const Sidebar: FC<SidebarProps> = ({
   filters,
   emitFilterChangeCallback,
   resetFilterValues,
+  uploadImage,
+  downloadImage,
+  currentCanvasSrc,
 }: SidebarProps): JSX.Element => {
   const renderFilterElements = (): JSX.Element[] => {
     return filters.map((currentFilter, index) => {
@@ -31,7 +34,12 @@ const Sidebar: FC<SidebarProps> = ({
         },
         {
           labelText: 'Save changes',
-          callbackFunc: () => console.log('Save changes button clicked'),
+          callbackFunc: uploadImage,
+          category: ButtonCategory.PRIMARY,
+        },
+        {
+          labelText: 'Prepare for download',
+          callbackFunc: downloadImage,
           category: ButtonCategory.PRIMARY,
         },
       ] as ButtonProps[]
@@ -48,6 +56,14 @@ const Sidebar: FC<SidebarProps> = ({
       <div className={Styles.buttonContainer}>
         <div className={Styles.buttons}>{renderButtons()}</div>
       </div>
+
+      {currentCanvasSrc && (
+        <button>
+          <a href={currentCanvasSrc} download target='_blank' rel='noreferrer'>
+            Download image
+          </a>
+        </button>
+      )}
     </div>
   );
 };

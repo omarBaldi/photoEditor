@@ -1,12 +1,15 @@
-import { FC, useEffect, useRef } from 'react';
+import { FC, useEffect, useRef, useState } from 'react';
 import { ImageProps } from '.';
 import { FilterType } from '../filter-range/dto';
 import Style from './image.module.scss';
 
-const imageURL: string =
-  'https://images.pexels.com/photos/4560610/pexels-photo-4560610.jpeg?auto=compress&cs=tinysrgb&dpr=2&w=500';
-
-const Image: FC<ImageProps> = ({ filtersToApply }: ImageProps): JSX.Element => {
+const Image: FC<ImageProps> = ({
+  filtersToApply,
+  imageSrc,
+  shouldUploadImage,
+  shouldDownloadImage,
+  sendCanvasSourceCallback,
+}: ImageProps): JSX.Element | null => {
   const imageRef: React.RefObject<HTMLImageElement> =
     useRef<HTMLImageElement>(null);
   const isInitialMount: React.MutableRefObject<boolean> = useRef(true);
@@ -53,16 +56,47 @@ const Image: FC<ImageProps> = ({ filtersToApply }: ImageProps): JSX.Element => {
     element.style.filter = `${imageFilters}`;
   };
 
-  return (
-    <div className={Style.imageContainer}>
-      <img
-        ref={imageRef}
-        src={imageURL}
-        alt=''
-        className={Style.imageElement}
-      />
-    </div>
-  );
+  const uploadImageToDatabase = () => {};
+
+  const [imageURLDownload, setImageURLDownload] = useState<string | null>(null);
+
+  const saveImageURLForDownload = async (): Promise<void> => {
+    const canvasDOM = document.createElement('canvas') as HTMLCanvasElement;
+    const ctx = canvasDOM.getContext('2d') as CanvasRenderingContext2D;
+    ctx.filter = (imageRef.current as HTMLImageElement).style.filter;
+    ctx.drawImage(imageRef.current as HTMLImageElement, 0, 0, 100, 100);
+    const dt = canvasDOM.toDataURL('image/jpeg');
+    setImageURLDownload(dt);
+  };
+
+  useEffect(() => {
+    imageURLDownload && sendCanvasSourceCallback?.(imageURLDownload);
+  }, [imageURLDownload]);
+
+  /* useEffect(() => {
+    shouldUploadImage && uploadImageToDatabase();
+  }, [shouldUploadImage]); */
+
+  useEffect(() => {
+    shouldDownloadImage && saveImageURLForDownload();
+  }, [shouldDownloadImage]);
+
+  const renderImage = (): JSX.Element | null => {
+    if (!imageSrc) return null;
+
+    return (
+      <div className={Style.imageContainer}>
+        <img
+          ref={imageRef}
+          src={imageSrc}
+          alt=''
+          className={Style.imageElement}
+        />
+      </div>
+    );
+  };
+
+  return renderImage();
 };
 
 export default Image;

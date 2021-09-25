@@ -3,9 +3,10 @@ import { FilterRangeProps } from '../../molecules/filter-range';
 type SidebarProps = {
   filters: FilterRangeProps[];
   emitFilterChangeCallback: any;
-  //buttonSave
-  //buttonCancel
   resetFilterValues?: () => void;
+  uploadImage?: () => void;
+  downloadImage?: () => void;
+  currentCanvasSrc?: string;
 };
 
 export default SidebarProps;

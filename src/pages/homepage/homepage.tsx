@@ -1,4 +1,4 @@
-import { FC, useState } from 'react';
+import { FC, useEffect, useRef, useState } from 'react';
 import { Sidebar } from '../../organisms/sidebar';
 import { FilterRangeProps } from '../../molecules/filter-range';
 import { Image } from '../../molecules/image';
@@ -85,6 +85,21 @@ const Homepage: FC<HomepageProps> = ({
     }
   };
 
+  const [currentImageSrc, setCurrentImageSrc] = useState<string | null>(null);
+
+  const handleLoadFile = (e: any) => {
+    const urlFileUploaded: string = URL.createObjectURL(e.target.files[0]);
+    setCurrentImageSrc(urlFileUploaded);
+  };
+
+  const [startUploadingImage, setStartUploadingImage] =
+    useState<boolean>(false);
+
+  const [startDownloadImage, setSetstartDownloadImage] =
+    useState<boolean>(false);
+
+  const [canvasSrc, setCanvasSrc] = useState<string>('');
+
   return (
     <div className={Style.mainContainer}>
       <Sidebar
@@ -92,20 +107,39 @@ const Homepage: FC<HomepageProps> = ({
           filters: updatedFiltersData,
           emitFilterChangeCallback: handleFilterChange,
           resetFilterValues: resetValues,
+          uploadImage: () => setStartUploadingImage(true),
+          downloadImage: () => setSetstartDownloadImage(true),
+          currentCanvasSrc: canvasSrc,
         }}
       />
-      <Image
-        {...{
-          filtersToApply: getImageFilters(),
-        }}
-      />
-      <div style={{ position: 'absolute', top: 0, right: 0 }}>
-        <Button
+      <div style={{ position: 'relative' }}>
+        <div style={{ position: 'absolute', top: 0, left: 0 }}>
+          {!currentImageSrc ? (
+            <input type='file' accept='image/*' onChange={handleLoadFile} />
+          ) : (
+            <button onClick={() => setCurrentImageSrc(null)}>Reset</button>
+          )}
+        </div>
+        <Image
           {...{
-            labelText: 'Logout',
-            callbackFunc: signUserOut,
+            filtersToApply: getImageFilters(),
+            imageSrc: currentImageSrc,
+            shouldUploadImage: startUploadingImage,
+            shouldDownloadImage: startDownloadImage,
+            sendCanvasSourceCallback: (currentSrc) => {
+              setCanvasSrc(currentSrc);
+              setSetstartDownloadImage(false);
+            },
           }}
         />
+        <div style={{ position: 'absolute', top: 0, right: 0 }}>
+          <Button
+            {...{
+              labelText: 'Logout',
+              callbackFunc: signUserOut,
+            }}
+          />
+        </div>
       </div>
     </div>
   );
