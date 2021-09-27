@@ -9,8 +9,6 @@ export interface filtersToApplyI {
 export type ImageProps = {
   filtersToApply: filtersToApplyI[];
   imageSrc: string | null;
-  shouldUploadImage: boolean;
-  shouldDownloadImage: boolean;
   sendCanvasSourceCallback?: (currentSrc: string) => void;
 };
 

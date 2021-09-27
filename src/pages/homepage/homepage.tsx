@@ -93,15 +93,9 @@ const Homepage: FC<HomepageProps> = ({
     setCurrentImageSrc(urlFileUploaded);
   };
 
-  const [startUploadingImage, setStartUploadingImage] =
-    useState<boolean>(false);
+  const [downloadSrc, setDownloadSrc] = useState<string | null>(null);
 
-  const [startDownloadImage, setSetstartDownloadImage] =
-    useState<boolean>(false);
-
-  const [canvasSrc, setCanvasSrc] = useState<string>('');
-
-  useEffect(() => setCanvasSrc(''), [currentImageSrc]);
+  useEffect(() => setDownloadSrc(null), [currentImageSrc]);
 
   return (
     <div className={Style.mainContainer}>
@@ -110,9 +104,7 @@ const Homepage: FC<HomepageProps> = ({
           filters: updatedFiltersData,
           emitFilterChangeCallback: handleFilterChange,
           resetFilterValues: resetValues,
-          uploadImage: () => setStartUploadingImage(true),
-          downloadImage: () => setSetstartDownloadImage(true),
-          currentCanvasSrc: canvasSrc,
+          imageSrcDownload: downloadSrc,
         }}
       />
       <div style={{ position: 'relative' }}>
@@ -127,12 +119,7 @@ const Homepage: FC<HomepageProps> = ({
           {...{
             filtersToApply: getImageFilters(),
             imageSrc: currentImageSrc,
-            shouldUploadImage: startUploadingImage,
-            shouldDownloadImage: startDownloadImage,
-            sendCanvasSourceCallback: (currentSrc) => {
-              setCanvasSrc(currentSrc);
-              setSetstartDownloadImage(false);
-            },
+            sendCanvasSourceCallback: setDownloadSrc,
           }}
         />
         <div style={{ position: 'absolute', top: 0, right: 0 }}>

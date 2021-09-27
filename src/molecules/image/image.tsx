@@ -1,4 +1,4 @@
-import { FC, useEffect, useRef, useState } from 'react';
+import { FC, useEffect, useRef } from 'react';
 import { ImageProps } from '.';
 import { FilterType } from '../filter-range/dto';
 import Style from './image.module.scss';
@@ -6,8 +6,6 @@ import Style from './image.module.scss';
 const Image: FC<ImageProps> = ({
   filtersToApply,
   imageSrc,
-  shouldUploadImage,
-  shouldDownloadImage,
   sendCanvasSourceCallback,
 }: ImageProps): JSX.Element | null => {
   const imageRef: React.RefObject<HTMLImageElement> =
@@ -56,11 +54,7 @@ const Image: FC<ImageProps> = ({
     element.style.filter = `${imageFilters}`;
   };
 
-  const uploadImageToDatabase = () => {};
-
-  const [imageURLDownload, setImageURLDownload] = useState<string | null>(null);
-
-  const saveImageURLForDownload = async (): Promise<void> => {
+  const saveImageURLForDownload = (): string => {
     const imageDOMElement = imageRef.current as HTMLImageElement;
 
     const canvasDOM = document.createElement('canvas') as HTMLCanvasElement;
@@ -78,37 +72,24 @@ const Image: FC<ImageProps> = ({
     );
 
     const dt = canvasDOM.toDataURL('image/jpeg');
-    setImageURLDownload(dt);
+    return dt;
   };
 
+  /* Whenever the filters values are being changed send back en event that updates  */
   useEffect(() => {
-    imageURLDownload && sendCanvasSourceCallback?.(imageURLDownload);
-  }, [imageURLDownload]);
+    imageRef.current && sendCanvasSourceCallback?.(saveImageURLForDownload());
+  }, [filtersToApply]);
 
-  /* useEffect(() => {
-    shouldUploadImage && uploadImageToDatabase();
-  }, [shouldUploadImage]); */
-
-  useEffect(() => {
-    shouldDownloadImage && saveImageURLForDownload();
-  }, [shouldDownloadImage]);
-
-  const renderImage = (): JSX.Element | null => {
-    if (!imageSrc) return null;
-
-    return (
-      <div className={Style.imageContainer}>
-        <img
-          ref={imageRef}
-          src={imageSrc}
-          alt=''
-          className={Style.imageElement}
-        />
-      </div>
-    );
-  };
-
-  return renderImage();
+  return (imageSrc && (
+    <div className={Style.imageContainer}>
+      <img
+        ref={imageRef}
+        src={imageSrc}
+        alt=''
+        className={Style.imageElement}
+      />
+    </div>
+  )) as JSX.Element | null;
 };
 
 export default Image;

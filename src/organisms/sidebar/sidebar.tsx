@@ -1,6 +1,6 @@
-import { FC, useEffect, useState } from 'react';
+import { FC } from 'react';
 import { Button } from '../../atoms/button';
-import ButtonProps, { ButtonCategory } from '../../atoms/button/dto';
+import { ButtonCategory } from '../../atoms/button/dto';
 import { FilterRange } from '../../molecules/filter-range';
 import SidebarProps from './dto';
 import Styles from './sidebar.module.scss';
@@ -9,9 +9,7 @@ const Sidebar: FC<SidebarProps> = ({
   filters,
   emitFilterChangeCallback,
   resetFilterValues,
-  uploadImage,
-  downloadImage,
-  currentCanvasSrc,
+  imageSrcDownload,
 }: SidebarProps): JSX.Element => {
   const renderFilterElements = (): JSX.Element[] => {
     return filters.map((currentFilter, index) => {
@@ -36,10 +34,10 @@ const Sidebar: FC<SidebarProps> = ({
               category: ButtonCategory.SECONDARY,
             }}
           />
-          {currentCanvasSrc ? (
+          {imageSrcDownload && (
             <button>
               <a
-                href={currentCanvasSrc}
+                href={imageSrcDownload}
                 download
                 target='_blank'
                 rel='noreferrer'
@@ -47,14 +45,6 @@ const Sidebar: FC<SidebarProps> = ({
                 Download image
               </a>
             </button>
-          ) : (
-            <Button
-              {...{
-                labelText: 'Prepare for download',
-                callbackFunc: downloadImage,
-                category: ButtonCategory.PRIMARY,
-              }}
-            />
           )}
         </div>
       </div>

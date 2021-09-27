@@ -4,9 +4,7 @@ type SidebarProps = {
   filters: FilterRangeProps[];
   emitFilterChangeCallback: any;
   resetFilterValues?: () => void;
-  uploadImage?: () => void;
-  downloadImage?: () => void;
-  currentCanvasSrc?: string;
+  imageSrcDownload: string | null;
 };
 
 export default SidebarProps;
