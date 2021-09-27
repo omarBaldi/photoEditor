@@ -101,6 +101,8 @@ const Homepage: FC<HomepageProps> = ({
 
   const [canvasSrc, setCanvasSrc] = useState<string>('');
 
+  useEffect(() => setCanvasSrc(''), [currentImageSrc]);
+
   return (
     <div className={Style.mainContainer}>
       <Sidebar

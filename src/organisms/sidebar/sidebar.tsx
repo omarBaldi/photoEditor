@@ -24,46 +24,40 @@ const Sidebar: FC<SidebarProps> = ({
     });
   };
 
-  const renderButtons = () => {
-    const buttonData = (
-      [
-        {
-          labelText: 'Cancel',
-          callbackFunc: resetFilterValues,
-          category: ButtonCategory.SECONDARY,
-        },
-        {
-          labelText: 'Save changes',
-          callbackFunc: uploadImage,
-          category: ButtonCategory.PRIMARY,
-        },
-        {
-          labelText: 'Prepare for download',
-          callbackFunc: downloadImage,
-          category: ButtonCategory.PRIMARY,
-        },
-      ] as ButtonProps[]
-    ).map((currentButton, index) => {
-      return <Button key={index} {...currentButton} />;
-    });
-
-    return buttonData;
-  };
-
   return (
     <div className={Styles.sidebarContainer}>
       {renderFilterElements()}
       <div className={Styles.buttonContainer}>
-        <div className={Styles.buttons}>{renderButtons()}</div>
+        <div className={Styles.buttons}>
+          <Button
+            {...{
+              labelText: 'Cancel',
+              callbackFunc: resetFilterValues,
+              category: ButtonCategory.SECONDARY,
+            }}
+          />
+          {currentCanvasSrc ? (
+            <button>
+              <a
+                href={currentCanvasSrc}
+                download
+                target='_blank'
+                rel='noreferrer'
+              >
+                Download image
+              </a>
+            </button>
+          ) : (
+            <Button
+              {...{
+                labelText: 'Prepare for download',
+                callbackFunc: downloadImage,
+                category: ButtonCategory.PRIMARY,
+              }}
+            />
+          )}
+        </div>
       </div>
-
-      {currentCanvasSrc && (
-        <button>
-          <a href={currentCanvasSrc} download target='_blank' rel='noreferrer'>
-            Download image
-          </a>
-        </button>
-      )}
     </div>
   );
 };
