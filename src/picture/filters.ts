@@ -6,6 +6,7 @@ export const filtersData = [
     rangeName: 'brightness',
     type: FilterType.BRIGHTNESS,
     defaultValue: 100,
+    maxValue: 200,
   },
   {
     labelName: 'Sepia',

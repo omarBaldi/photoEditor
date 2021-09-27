@@ -61,10 +61,22 @@ const Image: FC<ImageProps> = ({
   const [imageURLDownload, setImageURLDownload] = useState<string | null>(null);
 
   const saveImageURLForDownload = async (): Promise<void> => {
+    const imageDOMElement = imageRef.current as HTMLImageElement;
+
     const canvasDOM = document.createElement('canvas') as HTMLCanvasElement;
+    canvasDOM.height = imageDOMElement.height;
+    canvasDOM.width = imageDOMElement.width;
+
     const ctx = canvasDOM.getContext('2d') as CanvasRenderingContext2D;
-    ctx.filter = (imageRef.current as HTMLImageElement).style.filter;
-    ctx.drawImage(imageRef.current as HTMLImageElement, 0, 0, 100, 100);
+    ctx.filter = imageDOMElement.style.filter;
+    ctx.drawImage(
+      imageRef.current as HTMLImageElement,
+      0,
+      0,
+      canvasDOM.width,
+      canvasDOM.height
+    );
+
     const dt = canvasDOM.toDataURL('image/jpeg');
     setImageURLDownload(dt);
   };

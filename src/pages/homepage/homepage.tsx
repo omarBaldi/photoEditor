@@ -24,6 +24,7 @@ const Homepage: FC<HomepageProps> = ({
           rangeName: string;
           type: FilterType;
           defaultValue?: number;
+          maxValue?: number;
         }
       ) => {
         const newCurr = {
