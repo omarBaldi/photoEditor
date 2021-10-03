@@ -3,11 +3,15 @@
   outline: none;
   background-color: transparent;
   border: 1px solid #ffff;
-  border-radius: 30px;
+  //border-radius: 30px;
   color: #ffff;
   text-transform: uppercase;
   margin-top: 2rem;
   cursor: pointer;
+  .download {
+    text-decoration: none;
+    color: inherit;
+  }
   &.buttonSmall {
     padding: 0.5rem 1rem;
   }

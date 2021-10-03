@@ -71,8 +71,7 @@ const Image: FC<ImageProps> = ({
       canvasDOM.height
     );
 
-    const dt = canvasDOM.toDataURL('image/jpeg');
-    return dt;
+    return canvasDOM.toDataURL('image/jpeg');
   };
 
   /* Whenever the filters values are being changed send back en event that updates  */

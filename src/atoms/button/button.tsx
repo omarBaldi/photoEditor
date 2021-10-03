@@ -2,12 +2,9 @@ import { FC } from 'react';
 import ButtonProps, { ButtonCategory, ButtonSize } from './dto';
 import Style from './button.module.scss';
 
-const Button: FC<ButtonProps> = ({
-  labelText,
-  size,
-  category,
-  callbackFunc,
-}: ButtonProps) => {
+const Button: FC<ButtonProps> = (props: ButtonProps): JSX.Element | null => {
+  const { labelText, size, category } = props;
+
   const getSizeClass = (): string => {
     switch (size) {
       case ButtonSize.SMALL:
@@ -30,16 +27,32 @@ const Button: FC<ButtonProps> = ({
     }
   };
 
-  return (
+  return 'downloadSrc' in props && props.downloadSrc ? (
     <button
-      onClick={callbackFunc}
+      className={`${
+        Style.customButton
+      } ${getSizeClass()} ${getCategoryClass()}`}
+    >
+      <a
+        href={props.downloadSrc}
+        download
+        target='_blank'
+        rel='noreferrer'
+        className={Style.download}
+      >
+        {labelText}
+      </a>
+    </button>
+  ) : 'callbackFunc' in props ? (
+    <button
+      onClick={props.callbackFunc}
       className={`${
         Style.customButton
       } ${getSizeClass()} ${getCategoryClass()}`}
     >
       {labelText}
     </button>
-  );
+  ) : null;
 };
 
 export default Button;

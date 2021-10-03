@@ -2,12 +2,14 @@
   background-color: #222831;
   color: #ffff;
   padding: 3rem;
+  overflow-y: auto;
   .buttonContainer {
     display: flex;
     justify-content: center;
     .buttons {
       display: flex;
       flex-direction: column;
+      width: 100%;
     }
   }
 }

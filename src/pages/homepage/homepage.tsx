@@ -1,4 +1,4 @@
-import { FC, useEffect, useRef, useState } from 'react';
+import { FC, useEffect, useState } from 'react';
 import { Sidebar } from '../../organisms/sidebar';
 import { FilterRangeProps } from '../../molecules/filter-range';
 import { Image } from '../../molecules/image';
@@ -9,10 +9,19 @@ import Style from './homepage.module.scss';
 import { Button } from '../../atoms/button';
 import { getAuth, signOut } from 'firebase/auth'; //create file in firebase and export every utils instead of repeating importing
 import { HomepageProps } from '.';
+import {
+  ref,
+  listAll,
+  getDownloadURL,
+  StorageReference,
+} from 'firebase/storage';
+import { storage } from '../../config/firebaseInitialize';
 
 const Homepage: FC<HomepageProps> = ({
   signUserOutCallback,
 }: HomepageProps): JSX.Element => {
+  /* *---------------------------------------- VARIABLES */
+
   const auth = getAuth();
 
   const initializedFilterValues = (): FilterRangeProps[] => {
@@ -41,9 +50,12 @@ const Homepage: FC<HomepageProps> = ({
     FilterRangeProps[]
   >(initializedFilterValues);
 
-  const resetValues = () => {
-    setUpdatedFiltersData(initializedFilterValues);
-  };
+  const [currentImageSrc, setCurrentImageSrc] = useState<string | null>(null);
+  const [downloadSrc, setDownloadSrc] = useState<string | null>(null);
+
+  /* *---------------------------------------- LOGIC */
+
+  const resetValues = () => setUpdatedFiltersData(initializedFilterValues);
 
   const handleFilterChange = (e: any): void => {
     const { name, value } = e.target;
@@ -77,7 +89,7 @@ const Homepage: FC<HomepageProps> = ({
     }, [] as filtersToApplyI[]);
   };
 
-  const signUserOut = async () => {
+  const signUserOut = async (): Promise<void> => {
     try {
       await signOut(auth);
       signUserOutCallback?.();
@@ -86,16 +98,43 @@ const Homepage: FC<HomepageProps> = ({
     }
   };
 
-  const [currentImageSrc, setCurrentImageSrc] = useState<string | null>(null);
-
   const handleLoadFile = (e: any) => {
     const urlFileUploaded: string = URL.createObjectURL(e.target.files[0]);
     setCurrentImageSrc(urlFileUploaded);
   };
 
-  const [downloadSrc, setDownloadSrc] = useState<string | null>(null);
+  useEffect(() => {
+    !currentImageSrc && setDownloadSrc(null);
+  }, [currentImageSrc]);
 
-  useEffect(() => setDownloadSrc(null), [currentImageSrc]);
+  const [firebaseImagesSrc, setFirebaseImagesSrc] = useState<string[]>([]);
+
+  const getImagesURLFromDatabase = async (): Promise<void> => {
+    // Create a reference under which you want to list
+    const listRef: StorageReference = ref(storage);
+
+    try {
+      const { items } = await listAll(listRef);
+      const imagesURL = await Promise.all(
+        items.map(async (currentItemRef) => {
+          return await getDownloadURL(ref(storage, currentItemRef.name));
+        })
+      );
+      setFirebaseImagesSrc(imagesURL);
+    } catch (err) {
+      console.log((err as any).message);
+      setFirebaseImagesSrc([]);
+    }
+
+    //const urlTest = await getDownloadURL(ref(storage, 'some-child'));
+    //console.log(urlTest);
+  };
+
+  useEffect(() => {
+    getImagesURLFromDatabase();
+  }, []);
+
+  /* *---------------------------------------- RENDER DOM ELEMENT */
 
   return (
     <div className={Style.mainContainer}>
@@ -107,12 +146,15 @@ const Homepage: FC<HomepageProps> = ({
           imageSrcDownload: downloadSrc,
         }}
       />
-      <div style={{ position: 'relative' }}>
+      <div style={{ position: 'relative', backgroundColor: '#c1c0b9' }}>
         <div style={{ position: 'absolute', top: 0, left: 0 }}>
-          {!currentImageSrc ? (
-            <input type='file' accept='image/*' onChange={handleLoadFile} />
-          ) : (
-            <button onClick={() => setCurrentImageSrc(null)}>Reset</button>
+          {!currentImageSrc && (
+            <input
+              type='file'
+              accept='image/*'
+              onChange={handleLoadFile}
+              className={Style.inputFile}
+            />
           )}
         </div>
         <Image
@@ -122,13 +164,28 @@ const Homepage: FC<HomepageProps> = ({
             sendCanvasSourceCallback: setDownloadSrc,
           }}
         />
-        <div style={{ position: 'absolute', top: 0, right: 0 }}>
+        <div style={{ position: 'absolute', top: 0, right: '3rem' }}>
           <Button
             {...{
               labelText: 'Logout',
               callbackFunc: signUserOut,
             }}
           />
+        </div>
+        <div>
+          <h1>Firebase images stored</h1>
+          <div style={{ display: 'flex', flexWrap: 'wrap' }}>
+            {firebaseImagesSrc.map((currentSrc, index) => {
+              return (
+                <img
+                  src={currentSrc}
+                  alt=''
+                  key={index}
+                  style={{ width: '100px' }}
+                />
+              );
+            })}
+          </div>
         </div>
       </div>
     </div>
