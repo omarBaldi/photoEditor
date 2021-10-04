@@ -16,15 +16,20 @@ import {
   StorageReference,
 } from 'firebase/storage';
 import { storage } from '../../config/firebaseInitialize';
+import { useDispatch, useSelector } from 'react-redux';
+import { bindActionCreators } from 'redux';
+import { AllActionCreators } from '../../redux/action-creators';
+import { handleLoadFile } from '../../redux/action-creators/filter-action-creators';
+import { rootReducersType } from '../../redux/reducers';
 
 const Homepage: FC<HomepageProps> = ({
   signUserOutCallback,
 }: HomepageProps): JSX.Element => {
   /* *---------------------------------------- VARIABLES */
 
-  const auth = getAuth();
+  //const auth = getAuth();
 
-  const initializedFilterValues = (): FilterRangeProps[] => {
+  /* const initializedFilterValues = (): FilterRangeProps[] => {
     return filtersData.reduce(
       (
         acc,
@@ -44,39 +49,29 @@ const Homepage: FC<HomepageProps> = ({
       },
       [] as FilterRangeProps[]
     );
-  };
+  }; */
 
-  const [updatedFiltersData, setUpdatedFiltersData] = useState<
+  /* const [updatedFiltersData, setUpdatedFiltersData] = useState<
     FilterRangeProps[]
-  >(initializedFilterValues);
+  >(initializedFilterValues); */
 
-  const [currentImageSrc, setCurrentImageSrc] = useState<string | null>(null);
-  const [downloadSrc, setDownloadSrc] = useState<string | null>(null);
+  /* const [currentImageSrc, setCurrentImageSrc] = useState<string | null>(null);
+  const [downloadSrc, setDownloadSrc] = useState<string | null>(null); */
 
   /* *---------------------------------------- LOGIC */
 
-  const resetValues = () => setUpdatedFiltersData(initializedFilterValues);
+  //const resetValues = () => setUpdatedFiltersData(initializedFilterValues);
 
-  const handleFilterChange = (e: any): void => {
-    const { name, value } = e.target;
-    const copyArr: FilterRangeProps[] = [...updatedFiltersData];
-    const elementToUpdate: FilterRangeProps | undefined = copyArr.find(
-      (el) => el.rangeName === name
-    );
-    elementToUpdate && (elementToUpdate.currentValue = Number(value));
-    setUpdatedFiltersData(copyArr);
-  };
-
-  const retrieveTypeByRangeName = (
+  /* const retrieveTypeByRangeName = (
     currentRangeName: string
   ): FilterType | undefined => {
     return (
       filtersData.find((el) => el.rangeName === currentRangeName)?.type ??
       undefined
     );
-  };
+  }; */
 
-  const getImageFilters = (): filtersToApplyI[] => {
+  /* const getImageFilters = (): filtersToApplyI[] => {
     return updatedFiltersData.reduce((acc, curr: FilterRangeProps) => {
       return [
         ...acc,
@@ -87,29 +82,29 @@ const Homepage: FC<HomepageProps> = ({
         },
       ];
     }, [] as filtersToApplyI[]);
-  };
+  }; */
 
-  const signUserOut = async (): Promise<void> => {
+  /* const signUserOut = async (): Promise<void> => {
     try {
       await signOut(auth);
       signUserOutCallback?.();
     } catch (err) {
       console.log((err as any).message);
     }
-  };
+  }; */
 
-  const handleLoadFile = (e: any) => {
+  /* const handleLoadFile = (e: any) => {
     const urlFileUploaded: string = URL.createObjectURL(e.target.files[0]);
     setCurrentImageSrc(urlFileUploaded);
-  };
+  }; */
 
-  useEffect(() => {
+  /* useEffect(() => {
     !currentImageSrc && setDownloadSrc(null);
-  }, [currentImageSrc]);
+  }, [currentImageSrc]); */
 
-  const [firebaseImagesSrc, setFirebaseImagesSrc] = useState<string[]>([]);
+  //const [firebaseImagesSrc, setFirebaseImagesSrc] = useState<string[]>([]);
 
-  const getImagesURLFromDatabase = async (): Promise<void> => {
+  /* const getImagesURLFromDatabase = async (): Promise<void> => {
     // Create a reference under which you want to list
     const listRef: StorageReference = ref(storage);
 
@@ -128,64 +123,86 @@ const Homepage: FC<HomepageProps> = ({
 
     //const urlTest = await getDownloadURL(ref(storage, 'some-child'));
     //console.log(urlTest);
-  };
+  }; */
 
-  useEffect(() => {
+  /* useEffect(() => {
     getImagesURLFromDatabase();
-  }, []);
+  }, []); */
+
+  const dispatch = useDispatch();
+  const { handleLoadFile } = bindActionCreators(AllActionCreators, dispatch);
 
   /* *---------------------------------------- RENDER DOM ELEMENT */
 
   return (
     <div className={Style.mainContainer}>
       <Sidebar
-        {...{
-          filters: updatedFiltersData,
+        {
+          ...{
+            /* filters: updatedFiltersData,
           emitFilterChangeCallback: handleFilterChange,
           resetFilterValues: resetValues,
-          imageSrcDownload: downloadSrc,
-        }}
+          imageSrcDownload: downloadSrc, */
+          }
+        }
       />
-      <div style={{ position: 'relative', backgroundColor: '#c1c0b9' }}>
+
+      <div
+        style={{
+          position: 'relative',
+          backgroundColor: '#c1c0b9',
+          height: '100%',
+          display: 'flex',
+          flexDirection: 'column',
+        }}
+      >
         <div style={{ position: 'absolute', top: 0, left: 0 }}>
-          {!currentImageSrc && (
+          {/* {!currentImageSrc && (
             <input
               type='file'
               accept='image/*'
               onChange={handleLoadFile}
               className={Style.inputFile}
             />
-          )}
+          )} */}
         </div>
         <Image
-          {...{
-            filtersToApply: getImageFilters(),
+          {
+            ...{
+              /* filtersToApply: getImageFilters(),
             imageSrc: currentImageSrc,
-            sendCanvasSourceCallback: setDownloadSrc,
-          }}
+            sendCanvasSourceCallback: setDownloadSrc, */
+            }
+          }
+        />
+        <input
+          type='file'
+          accept='image/*'
+          onChange={handleLoadFile}
+          className={Style.inputFile}
         />
         <div style={{ position: 'absolute', top: 0, right: '3rem' }}>
-          <Button
+          {/* <Button
             {...{
               labelText: 'Logout',
               callbackFunc: signUserOut,
             }}
-          />
+          /> */}
         </div>
-        <div>
-          <h1>Firebase images stored</h1>
-          <div style={{ display: 'flex', flexWrap: 'wrap' }}>
+        <div style={{ marginTop: 'auto' }}>
+          {/* <h1>Firebase images stored</h1> */}
+          {/* <div style={{ display: 'flex', flexWrap: 'wrap' }}>
             {firebaseImagesSrc.map((currentSrc, index) => {
               return (
                 <img
                   src={currentSrc}
                   alt=''
                   key={index}
-                  style={{ width: '100px' }}
+                  style={{ width: '200px', height: '200px' }}
                 />
               );
             })}
-          </div>
+          </div> */}
         </div>
       </div>
     </div>

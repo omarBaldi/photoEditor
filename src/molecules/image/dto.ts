@@ -7,8 +7,8 @@ export interface filtersToApplyI {
 }
 
 export type ImageProps = {
-  filtersToApply: filtersToApplyI[];
-  imageSrc: string | null;
+  filtersToApply?: filtersToApplyI[];
+  imageSrc?: string | null;
   sendCanvasSourceCallback?: (currentSrc: string) => void;
 };
 

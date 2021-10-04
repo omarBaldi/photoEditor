@@ -14,7 +14,8 @@ type FilterRangeProps = {
   minValue?: number;
   maxValue?: number;
   currentValue: number;
-  callbackFunc?: () => void;
+  currentType: FilterType;
+  callbackFunc?: any;
 };
 
 export default FilterRangeProps;

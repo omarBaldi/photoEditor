@@ -11,23 +11,33 @@ import { FilterRange, FilterRangeProps } from '../../molecules/filter-range';
 import { filtersData } from '../../picture/filters';
 import SidebarProps from './dto';
 import Styles from './sidebar.module.scss';
+import { useDispatch, useSelector } from 'react-redux';
+import { bindActionCreators } from 'redux';
+import { AllActionCreators } from '../../redux/action-creators';
+import { rootReducersType } from '../../redux/reducers';
 
-const Sidebar: FC<SidebarProps> = ({
-  filters,
-  emitFilterChangeCallback,
-  resetFilterValues,
-  imageSrcDownload,
-}: SidebarProps): JSX.Element => {
+const Sidebar: FC<{}> = (): JSX.Element => {
   const storage: FirebaseStorage = getStorage();
+  const dispatch = useDispatch();
+  const { updateFilterValue, resetFilters } = bindActionCreators(
+    AllActionCreators,
+    dispatch
+  );
+  const { imageFilters } = useSelector(
+    (state: rootReducersType) => state.filters
+  );
+
   const renderFilterElements = (): JSX.Element[] => {
-    return filters.map((currentFilter: FilterRangeProps, index: number) => {
-      return (
-        <FilterRange
-          key={index}
-          {...{ ...currentFilter, callbackFunc: emitFilterChangeCallback }}
-        />
-      );
-    });
+    return (imageFilters as FilterRangeProps[]).map(
+      (currentFilter: FilterRangeProps, index: number) => {
+        return (
+          <FilterRange
+            key={index}
+            {...{ ...currentFilter, callbackFunc: updateFilterValue }}
+          />
+        );
+      }
+    );
   };
 
   const uploadImagetoFirebase = async (): Promise<void> => {
@@ -35,14 +45,14 @@ const Sidebar: FC<SidebarProps> = ({
         Remember to change the image name otherwise 
         it does overwrite the existing one with the same name
     */
-    const storageRef = ref(storage, 'test-image-3');
+    /* const storageRef = ref(storage, 'test-image-3');
 
     try {
       await uploadString(storageRef, imageSrcDownload as string, 'data_url');
       console.log('Uploaded a data_url string!');
     } catch (err) {
       console.log((err as any).message);
-    }
+    } */
   };
 
   const renderSidebar = () => {
@@ -60,21 +70,21 @@ const Sidebar: FC<SidebarProps> = ({
             <Button
               {...{
                 labelText: 'Cancel filters',
-                callbackFunc: resetFilterValues,
+                callbackFunc: resetFilters,
                 category: ButtonCategory.SECONDARY,
               }}
             />
 
-            <Button
+            {/* <Button
               {...{
                 labelText: 'Download image',
                 category: ButtonCategory.SECONDARY,
                 downloadSrc: imageSrcDownload,
                 isDisabled: !!imageSrcDownload,
               }}
-            />
+            /> */}
 
-            {imageSrcDownload && (
+            {/* {imageSrcDownload && (
               <Button
                 {...{
                   labelText: 'Upload image',
@@ -82,21 +92,14 @@ const Sidebar: FC<SidebarProps> = ({
                   callbackFunc: uploadImagetoFirebase,
                 }}
               />
-            )}
+            )} */}
           </div>
         </div>
       </div>
     );
   };
 
-  return useMemo(renderSidebar, [filters]);
+  return useMemo(renderSidebar, [imageFilters]);
 };
 
 export default Sidebar;
-function storageRef(
-  storageRef: any,
-  imageSrcDownload: string | null,
-  arg2: string
-) {
-  throw new Error('Function not implemented.');
-}

@@ -1,6 +1,10 @@
 import { FC, useEffect, useRef } from 'react';
+import { useDispatch, useSelector } from 'react-redux';
+import { bindActionCreators } from 'redux';
 import { ImageProps } from '.';
-import { FilterType } from '../filter-range/dto';
+import { AllActionCreators } from '../../redux/action-creators';
+import { rootReducersType } from '../../redux/reducers';
+import FilterRangeProps, { FilterType } from '../filter-range/dto';
 import Style from './image.module.scss';
 
 const Image: FC<ImageProps> = ({
@@ -12,6 +16,10 @@ const Image: FC<ImageProps> = ({
     useRef<HTMLImageElement>(null);
   const isInitialMount: React.MutableRefObject<boolean> = useRef(true);
 
+  const { imageFilters, currentImageSrc } = useSelector(
+    (state: rootReducersType) => state.filters
+  );
+
   useEffect(() => {
     if (isInitialMount.current) {
       isInitialMount.current = false;
@@ -22,39 +30,35 @@ const Image: FC<ImageProps> = ({
   });
 
   const checkFilterType = ({
-    name,
-    value,
-    type,
-  }: {
-    name: string;
-    value: number;
-    type: FilterType | undefined;
-  }): string => {
-    switch (type) {
+    currentType,
+    rangeName,
+    currentValue,
+  }: FilterRangeProps): string => {
+    switch (currentType) {
       case FilterType.BRIGHTNESS:
       case FilterType.CONTRAST:
       case FilterType.GRAYSCALE:
       case FilterType.OPACITY:
       case FilterType.SATURATE:
       case FilterType.SEPIA:
-        return `${name}(${value.toString()}%)`;
+        return `${rangeName}(${currentValue.toString()}%)`;
       case FilterType.BLUR:
-        return `${name}(${value.toString()}px)`;
+        return `${rangeName}(${currentValue.toString()}px)`;
       default:
         return '';
     }
   };
 
   const applyFiltersToImage = (element: HTMLImageElement) => {
-    const imageFilters: string = filtersToApply
+    const imageFiltersString: string = imageFilters
       .map(checkFilterType)
       .toString()
       .replaceAll(',', ' ');
 
-    element.style.filter = `${imageFilters}`;
+    element.style.filter = `${imageFiltersString}`;
   };
 
-  const saveImageURLForDownload = (): string => {
+  /* const saveImageURLForDownload = (): string => {
     const imageDOMElement = imageRef.current as HTMLImageElement;
 
     const canvasDOM = document.createElement('canvas') as HTMLCanvasElement;
@@ -72,18 +76,18 @@ const Image: FC<ImageProps> = ({
     );
 
     return canvasDOM.toDataURL('image/jpeg');
-  };
+  }; */
 
   /* Whenever the filters values are being changed send back en event that updates  */
-  useEffect(() => {
+  /* useEffect(() => {
     imageRef.current && sendCanvasSourceCallback?.(saveImageURLForDownload());
-  }, [filtersToApply]);
+  }, [filtersToApply]); */
 
-  return (imageSrc && (
+  return (currentImageSrc && (
     <div className={Style.imageContainer}>
       <img
         ref={imageRef}
-        src={imageSrc}
+        src={currentImageSrc}
         alt=''
         className={Style.imageElement}
       />
