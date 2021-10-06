@@ -4,9 +4,15 @@ import { initializeFilterValues } from '../../utils/filters';
 const filterReducerInitialState: {
   imageFilters: FilterRangeProps[];
   currentImageSrc: string;
+  downloadImageSrc: string;
+  imageDOMElement: HTMLImageElement | null;
+  isImageReadyForDownload: boolean;
 } = {
   imageFilters: initializeFilterValues(),
   currentImageSrc: '',
+  downloadImageSrc: '',
+  imageDOMElement: null,
+  isImageReadyForDownload: false,
 };
 
 export enum FilterReducerTypes {
@@ -16,6 +22,8 @@ export enum FilterReducerTypes {
   DOWNLOAD_IMAGE = 4,
   UPLOAD_IMAGE = 5,
   REMOVE_IMAGE = 6,
+  UPDATE_IMAGE_DOM = 7,
+  READY_FOR_DOWNLOAD = 8,
 }
 
 interface UpdateFilterI {
@@ -34,10 +42,23 @@ interface SetPictureI {
 
 interface DownloadImageI {
   type: FilterReducerTypes.DOWNLOAD_IMAGE;
+  payload: string;
 }
 
 interface UploadImageI {
   type: FilterReducerTypes.UPLOAD_IMAGE;
+}
+interface RemoveImageI {
+  type: FilterReducerTypes.REMOVE_IMAGE;
+}
+interface UpdateImageElementDOMI {
+  type: FilterReducerTypes.UPDATE_IMAGE_DOM;
+  payload: HTMLImageElement;
+}
+
+interface ToggleReadyForDownloadI {
+  type: FilterReducerTypes.READY_FOR_DOWNLOAD;
+  payload: boolean;
 }
 
 /* 
@@ -57,7 +78,10 @@ export type FilterAction =
   | ResetFiltersI
   | SetPictureI
   | DownloadImageI
-  | UploadImageI;
+  | UploadImageI
+  | RemoveImageI
+  | UpdateImageElementDOMI
+  | ToggleReadyForDownloadI;
 
 export const filterReducer = (
   state = filterReducerInitialState,
@@ -84,8 +108,24 @@ export const filterReducer = (
 
     case FilterReducerTypes.UPDATE_SRC_IMAGE:
       const urlFileUploaded: string = URL.createObjectURL(action.payload);
-
       return { ...state, currentImageSrc: urlFileUploaded };
+
+    case FilterReducerTypes.REMOVE_IMAGE:
+      return {
+        ...state,
+        currentImageSrc: '',
+        downloadImageSrc: '',
+        isImageReadyForDownload: false,
+      };
+
+    case FilterReducerTypes.DOWNLOAD_IMAGE:
+      return { ...state, downloadImageSrc: action.payload };
+
+    case FilterReducerTypes.UPDATE_IMAGE_DOM:
+      return { ...state, imageDOMElement: action.payload };
+
+    case FilterReducerTypes.READY_FOR_DOWNLOAD:
+      return { ...state, isImageReadyForDownload: action.payload };
 
     default:
       return state;

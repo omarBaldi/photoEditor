@@ -12,3 +12,17 @@ export const initializeFilterValues = (): FilterRangeProps[] => {
     return [...acc, newCurr];
   }, [] as FilterRangeProps[]);
 };
+
+export const saveImageURLForDownload = (
+  imageDOMElement: HTMLImageElement
+): string => {
+  const canvasDOM = document.createElement('canvas') as HTMLCanvasElement;
+  canvasDOM.height = imageDOMElement.height;
+  canvasDOM.width = imageDOMElement.width;
+
+  const ctx = canvasDOM.getContext('2d') as CanvasRenderingContext2D;
+  ctx.filter = imageDOMElement.style.filter;
+  ctx.drawImage(imageDOMElement, 0, 0, canvasDOM.width, canvasDOM.height);
+
+  return canvasDOM.toDataURL('image/jpeg');
+};

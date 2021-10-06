@@ -136,16 +136,7 @@ const Homepage: FC<HomepageProps> = ({
 
   return (
     <div className={Style.mainContainer}>
-      <Sidebar
-        {
-          ...{
-            /* filters: updatedFiltersData,
-          emitFilterChangeCallback: handleFilterChange,
-          resetFilterValues: resetValues,
-          imageSrcDownload: downloadSrc, */
-          }
-        }
-      />
+      <Sidebar />
 
       <div
         style={{
@@ -166,15 +157,7 @@ const Homepage: FC<HomepageProps> = ({
             />
           )} */}
         </div>
-        <Image
-          {
-            ...{
-              /* filtersToApply: getImageFilters(),
-            imageSrc: currentImageSrc,
-            sendCanvasSourceCallback: setDownloadSrc, */
-            }
-          }
-        />
+        <Image />
         <input
           type='file'
           accept='image/*'

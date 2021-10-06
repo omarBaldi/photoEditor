@@ -1,4 +1,4 @@
-import { FC, useEffect, useRef } from 'react';
+import { FC, MutableRefObject, RefObject, useEffect, useRef } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { bindActionCreators } from 'redux';
 import { ImageProps } from '.';
@@ -12,13 +12,13 @@ const Image: FC<ImageProps> = ({
   imageSrc,
   sendCanvasSourceCallback,
 }: ImageProps): JSX.Element | null => {
-  const imageRef: React.RefObject<HTMLImageElement> =
-    useRef<HTMLImageElement>(null);
-  const isInitialMount: React.MutableRefObject<boolean> = useRef(true);
+  const imageRef: RefObject<HTMLImageElement> = useRef<HTMLImageElement>(null);
+  const isInitialMount: MutableRefObject<boolean> = useRef(true);
 
-  const { imageFilters, currentImageSrc } = useSelector(
-    (state: rootReducersType) => state.filters
-  );
+  const dispatch = useDispatch();
+  const { downloadImage } = bindActionCreators(AllActionCreators, dispatch);
+  const { imageFilters, currentImageSrc, isImageReadyForDownload } =
+    useSelector((state: rootReducersType) => state.filters);
 
   useEffect(() => {
     if (isInitialMount.current) {
@@ -28,6 +28,20 @@ const Image: FC<ImageProps> = ({
       imageDOMElement && applyFiltersToImage(imageDOMElement);
     }
   });
+
+  useEffect(() => {
+    isImageReadyForDownload &&
+      downloadImage(imageRef.current as HTMLImageElement);
+  }, [isImageReadyForDownload]);
+
+  /* useEffect(() => {
+    imageRef?.current && updateImageDOM(imageRef.current);
+  }, [imageRef]); */
+
+  /* Whenever the filters are being applied to the image then update the current DOM element */
+  /* useEffect(() => {
+    updateImageDOM(imageRef.current as HTMLImageElement);
+  }, [() => applyFiltersToImage]); */
 
   const checkFilterType = ({
     currentType,
@@ -57,6 +71,14 @@ const Image: FC<ImageProps> = ({
 
     element.style.filter = `${imageFiltersString}`;
   };
+
+  useEffect(() => {
+    /* Whenever there is not a currentimagesrc set the isreadyfordownload to false */
+  }, [currentImageSrc]);
+
+  /* useEffect(() => {
+    !currentImageSrc
+  },[currentImageSrc]); */
 
   /* const saveImageURLForDownload = (): string => {
     const imageDOMElement = imageRef.current as HTMLImageElement;
