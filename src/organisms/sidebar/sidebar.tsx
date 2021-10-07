@@ -1,34 +1,33 @@
-import {
-  FirebaseStorage,
-  getStorage,
-  ref,
-  uploadString,
-} from 'firebase/storage';
-import { FC, useEffect, useMemo } from 'react';
+import { FC, useMemo } from 'react';
 import { Button } from '../../atoms/button';
 import { ButtonCategory } from '../../atoms/button/dto';
 import { FilterRange, FilterRangeProps } from '../../molecules/filter-range';
-import { filtersData } from '../../picture/filters';
-import SidebarProps from './dto';
 import Styles from './sidebar.module.scss';
 import { useDispatch, useSelector } from 'react-redux';
 import { bindActionCreators } from 'redux';
 import { AllActionCreators } from '../../redux/action-creators';
 import { rootReducersType } from '../../redux/reducers';
+import { uploadImagetoFirebase } from '../../utils/firebaseFunctions';
+import { SidebarProps } from '.';
+/* Swiper JS */
+import { Swiper, SwiperSlide } from 'swiper/react';
+import 'swiper/swiper-bundle.min.css';
+import 'swiper/swiper.min.css';
 
-const Sidebar: FC<{}> = (): JSX.Element | null => {
-  const storage: FirebaseStorage = getStorage();
-
+const Sidebar: FC<SidebarProps> = ({
+  databaseImages,
+}: SidebarProps): JSX.Element | null => {
   const dispatch = useDispatch();
   const {
     updateFilterValue,
     resetFilters,
     removeCurrentImage,
-    downloadImage,
     toggleImageReadyForDownload,
+    toggleImageUploadedState,
   } = bindActionCreators(AllActionCreators, dispatch);
-  const { imageFilters, currentImageSrc, downloadImageSrc, imageDOMElement } =
-    useSelector((state: rootReducersType) => state.filters);
+  const { imageFilters, currentImageSrc, downloadImageSrc } = useSelector(
+    (state: rootReducersType) => state.filters
+  );
 
   const renderFilterElements = (): JSX.Element[] => {
     return (imageFilters as FilterRangeProps[]).map(
@@ -43,88 +42,100 @@ const Sidebar: FC<{}> = (): JSX.Element | null => {
     );
   };
 
-  /* useEffect(() => {
-    downloadImageSrc &&
-      console.log(`Download image src changed: ${downloadImageSrc}`);
-  }, [downloadImageSrc]); */
-
-  const uploadImagetoFirebase = async (): Promise<void> => {
-    /* 
-        Remember to change the image name otherwise 
-        it does overwrite the existing one with the same name
-    */
-    /* const storageRef = ref(storage, 'test-image-3');
+  const handleUploadImageRequest = async (): Promise<void> => {
+    const imageName: string | null = prompt('Choose a name for your image: ');
+    if (!imageName) return;
 
     try {
-      await uploadString(storageRef, imageSrcDownload as string, 'data_url');
-      console.log('Uploaded a data_url string!');
+      await uploadImagetoFirebase(imageName, downloadImageSrc);
+      toggleImageUploadedState(true);
+      alert('Image Uploaded to database!');
     } catch (err) {
-      console.log((err as any).message);
-    } */
+      alert('Something went wrong during the upload! Try it again!');
+    }
   };
 
-  const renderSidebar = () => {
-    return (
-      <div className={Styles.sidebarContainer}>
-        {currentImageSrc ? (
-          <>
-            {renderFilterElements()}
-            <div className={Styles.buttonContainer}>
-              <div className={Styles.buttons}>
-                {/* 
+  return (
+    <div className={Styles.sidebarContainer}>
+      {databaseImages.length ? (
+        <Swiper
+          spaceBetween={20}
+          slidesPerView={2}
+          onSlideChange={() => console.log('slide change')}
+          onSwiper={(swiper) => console.log(swiper)}
+          pagination={{ clickable: true }}
+        >
+          {databaseImages.map((ImageDOM, index) => {
+            return (
+              <SwiperSlide key={index}>{ImageDOM as JSX.Element}</SwiperSlide>
+            );
+          })}
+        </Swiper>
+      ) : (
+        <h1>'loading images...'</h1>
+      )}
+      {currentImageSrc ? (
+        <>
+          {renderFilterElements()}
+          <div className={Styles.buttonContainer}>
+            <div className={Styles.buttons}>
+              {/* 
                  Render cancel filters button only if the currentFilters 
                  values are different from the original array (src/picture/filter.ts).
                  Use "some" built-in Js property 
                */}
 
+              <Button
+                {...{
+                  labelText: 'Cancel filters',
+                  callbackFunc: resetFilters,
+                  category: ButtonCategory.SECONDARY,
+                }}
+              />
+
+              <Button
+                {...{
+                  labelText: 'Remove image',
+                  callbackFunc: removeCurrentImage,
+                  category: ButtonCategory.SECONDARY,
+                }}
+              />
+
+              {!downloadImageSrc ? (
                 <Button
                   {...{
-                    labelText: 'Cancel filters',
-                    callbackFunc: resetFilters,
+                    labelText: 'Prepare image for download',
+                    callbackFunc: () => toggleImageReadyForDownload(true),
                     category: ButtonCategory.SECONDARY,
                   }}
                 />
-
+              ) : (
                 <Button
                   {...{
-                    labelText: 'Remove image',
-                    callbackFunc: removeCurrentImage,
+                    labelText: 'Download image now',
+                    downloadSrc: downloadImageSrc,
                     category: ButtonCategory.SECONDARY,
                   }}
                 />
+              )}
 
-                {!downloadImageSrc ? (
-                  <Button
-                    {...{
-                      labelText: 'Prepare image for download',
-                      callbackFunc: () => toggleImageReadyForDownload(true),
-                      category: ButtonCategory.SECONDARY,
-                    }}
-                  />
-                ) : (
-                  <Button
-                    {...{
-                      labelText: 'Download image now',
-                      downloadSrc: downloadImageSrc,
-                      category: ButtonCategory.SECONDARY,
-                    }}
-                  />
-                )}
-              </div>
+              {downloadImageSrc && (
+                <Button
+                  {...{
+                    labelText: 'Upload image',
+                    callbackFunc: handleUploadImageRequest,
+                    category: ButtonCategory.SECONDARY,
+                  }}
+                />
+              )}
             </div>
-          </>
-        ) : (
-          <div>Filters are not avilable! Select an image first!</div>
-        )}
-      </div>
-    );
-  };
-
-  return useMemo(renderSidebar, [
-    imageFilters,
-    currentImageSrc,
-    downloadImageSrc,
-  ]);
+          </div>
+        </>
+      ) : (
+        <div>Filters are not avilable! Select an image first! - </div>
+      )}
+    </div>
+  );
 };
 
 export default Sidebar;

@@ -1,4 +1,3 @@
-import { useState } from 'react';
 import { Dispatch } from 'redux';
 import { saveImageURLForDownload } from '../../utils/filters';
 import { FilterAction, FilterReducerTypes } from '../reducers/filter-reducer';
@@ -68,6 +67,15 @@ export const toggleImageReadyForDownload = (currentValue: boolean) => {
   return (dispatch: Dispatch<FilterAction>) => {
     dispatch({
       type: FilterReducerTypes.READY_FOR_DOWNLOAD,
+      payload: currentValue,
+    });
+  };
+};
+
+export const toggleImageUploadedState = (currentValue: boolean) => {
+  return (dispatch: Dispatch<FilterAction>) => {
+    dispatch({
+      type: FilterReducerTypes.IMAGE_UPLOADED,
       payload: currentValue,
     });
   };

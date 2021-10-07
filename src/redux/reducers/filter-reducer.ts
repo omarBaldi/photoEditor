@@ -7,12 +7,14 @@ const filterReducerInitialState: {
   downloadImageSrc: string;
   imageDOMElement: HTMLImageElement | null;
   isImageReadyForDownload: boolean;
+  imageUploaded: boolean;
 } = {
   imageFilters: initializeFilterValues(),
   currentImageSrc: '',
   downloadImageSrc: '',
   imageDOMElement: null,
   isImageReadyForDownload: false,
+  imageUploaded: true,
 };
 
 export enum FilterReducerTypes {
@@ -20,7 +22,7 @@ export enum FilterReducerTypes {
   RESET_FILTERS = 2,
   UPDATE_SRC_IMAGE = 3,
   DOWNLOAD_IMAGE = 4,
-  UPLOAD_IMAGE = 5,
+  IMAGE_UPLOADED = 5,
   REMOVE_IMAGE = 6,
   UPDATE_IMAGE_DOM = 7,
   READY_FOR_DOWNLOAD = 8,
@@ -45,8 +47,9 @@ interface DownloadImageI {
   payload: string;
 }
 
-interface UploadImageI {
-  type: FilterReducerTypes.UPLOAD_IMAGE;
+interface ImageUploadedI {
+  type: FilterReducerTypes.IMAGE_UPLOADED;
+  payload: boolean;
 }
 interface RemoveImageI {
   type: FilterReducerTypes.REMOVE_IMAGE;
@@ -78,7 +81,7 @@ export type FilterAction =
   | ResetFiltersI
   | SetPictureI
   | DownloadImageI
-  | UploadImageI
+  | ImageUploadedI
   | RemoveImageI
   | UpdateImageElementDOMI
   | ToggleReadyForDownloadI;
@@ -126,6 +129,9 @@ export const filterReducer = (
 
     case FilterReducerTypes.READY_FOR_DOWNLOAD:
       return { ...state, isImageReadyForDownload: action.payload };
+
+    case FilterReducerTypes.IMAGE_UPLOADED:
+      return { ...state, imageUploaded: action.payload };
 
     default:
       return state;

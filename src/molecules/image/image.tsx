@@ -34,15 +34,6 @@ const Image: FC<ImageProps> = ({
       downloadImage(imageRef.current as HTMLImageElement);
   }, [isImageReadyForDownload]);
 
-  /* useEffect(() => {
-    imageRef?.current && updateImageDOM(imageRef.current);
-  }, [imageRef]); */
-
-  /* Whenever the filters are being applied to the image then update the current DOM element */
-  /* useEffect(() => {
-    updateImageDOM(imageRef.current as HTMLImageElement);
-  }, [() => applyFiltersToImage]); */
-
   const checkFilterType = ({
     currentType,
     rangeName,
