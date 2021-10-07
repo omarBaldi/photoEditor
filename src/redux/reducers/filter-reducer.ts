@@ -14,7 +14,7 @@ const filterReducerInitialState: {
   downloadImageSrc: '',
   imageDOMElement: null,
   isImageReadyForDownload: false,
-  imageUploaded: true,
+  imageUploaded: false,
 };
 
 export enum FilterReducerTypes {
@@ -111,7 +111,14 @@ export const filterReducer = (
 
     case FilterReducerTypes.UPDATE_SRC_IMAGE:
       const urlFileUploaded: string = URL.createObjectURL(action.payload);
-      return { ...state, currentImageSrc: urlFileUploaded };
+      return {
+        ...state,
+        currentImageSrc: urlFileUploaded,
+        downloadImageSrc: '',
+        isImageReadyForDownload: false,
+        imageUploaded: false,
+        imageFilters: initializeFilterValues(),
+      };
 
     case FilterReducerTypes.REMOVE_IMAGE:
       return {

@@ -23,7 +23,10 @@ const Homepage: FC<HomepageProps> = ({
   }; */
 
   const dispatch = useDispatch();
-  const { handleLoadFile } = bindActionCreators(AllActionCreators, dispatch);
+  const { handleLoadFile, toggleImageUploadedState } = bindActionCreators(
+    AllActionCreators,
+    dispatch
+  );
   const { imageUploaded } = useSelector(
     (state: rootReducersType) => state.filters
   );
@@ -31,9 +34,10 @@ const Homepage: FC<HomepageProps> = ({
   const [imagesDOMElements, setImagesDOMElements] = useState<JSX.Element[]>([]);
 
   useMemo(async () => {
+    if (!imageUploaded) return;
+
     const databaseImagesSrc: string[] = await getImagesURLFromDatabase();
     const imagesDOM = databaseImagesSrc.map((currentImageSrc, index) => {
-      console.log(currentImageSrc);
       return (
         <img
           key={index}
@@ -51,6 +55,12 @@ const Homepage: FC<HomepageProps> = ({
       );
     });
     setImagesDOMElements(imagesDOM);
+    toggleImageUploadedState(false);
+    /* 
+      TODO: create alert to warn the user that a 
+      new image is available on the carousel 
+    */
+    alert('The new image uploaded is available on the carousel!');
   }, [imageUploaded]);
 
   return (

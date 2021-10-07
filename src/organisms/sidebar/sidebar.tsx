@@ -44,6 +44,11 @@ const Sidebar: FC<SidebarProps> = ({
 
   const handleUploadImageRequest = async (): Promise<void> => {
     const imageName: string | null = prompt('Choose a name for your image: ');
+
+    /* 
+      TODO: if the name already exists in the database 
+      then warn the user that he has to choose something else 
+    */
     if (!imageName) return;
 
     try {
