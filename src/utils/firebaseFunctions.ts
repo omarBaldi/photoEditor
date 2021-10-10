@@ -16,15 +16,25 @@ export const uploadImagetoFirebase = async (
   return await uploadString(storageRef, imageSrcDownload as string, 'data_url');
 };
 
-export const getImagesURLFromDatabase = async (): Promise<string[]> => {
+export const getImagesURLFromDatabase = async (): Promise<
+  {
+    imageDownloadSrc: string;
+    name: string;
+  }[]
+> => {
   const listRef: StorageReference = ref(storage);
 
   const { items } = await listAll(listRef);
-  const imagesURL = await Promise.all(
+  const imagesData = await Promise.all(
     items.map(async (currentItemRef) => {
-      return await getDownloadURL(ref(storage, currentItemRef.name));
+      return {
+        imageDownloadSrc: await getDownloadURL(
+          ref(storage, currentItemRef.name)
+        ),
+        name: currentItemRef.name,
+      };
     })
   );
 
-  return imagesURL;
+  return imagesData;
 };

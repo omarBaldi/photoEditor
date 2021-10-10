@@ -1,4 +1,4 @@
-import { FC, useMemo } from 'react';
+import { FC } from 'react';
 import { Button } from '../../atoms/button';
 import { ButtonCategory } from '../../atoms/button/dto';
 import { FilterRange, FilterRangeProps } from '../../molecules/filter-range';
@@ -8,15 +8,12 @@ import { bindActionCreators } from 'redux';
 import { AllActionCreators } from '../../redux/action-creators';
 import { rootReducersType } from '../../redux/reducers';
 import { uploadImagetoFirebase } from '../../utils/firebaseFunctions';
-import { SidebarProps } from '.';
 /* Swiper JS */
 import { Swiper, SwiperSlide } from 'swiper/react';
 import 'swiper/swiper-bundle.min.css';
 import 'swiper/swiper.min.css';
 
-const Sidebar: FC<SidebarProps> = ({
-  databaseImages,
-}: SidebarProps): JSX.Element | null => {
+const Sidebar: FC<{}> = (): JSX.Element | null => {
   const dispatch = useDispatch();
   const {
     updateFilterValue,
@@ -62,23 +59,6 @@ const Sidebar: FC<SidebarProps> = ({
 
   return (
     <div className={Styles.sidebarContainer}>
-      {databaseImages.length ? (
-        <Swiper
-          spaceBetween={20}
-          slidesPerView={2}
-          onSlideChange={() => console.log('slide change')}
-          onSwiper={(swiper) => console.log(swiper)}
-          pagination={{ clickable: true }}
-        >
-          {databaseImages.map((ImageDOM, index) => {
-            return (
-              <SwiperSlide key={index}>{ImageDOM as JSX.Element}</SwiperSlide>
-            );
-          })}
-        </Swiper>
-      ) : (
-        <h1>'loading images...'</h1>
-      )}
       {currentImageSrc ? (
         <>
           {renderFilterElements()}

@@ -4,6 +4,7 @@ import { Switch, Route, Redirect } from 'react-router-dom';
 import { Homepage } from './pages/homepage';
 import { RegisterPage } from './pages/register';
 import './App.css';
+import { ImagesDatabase } from './pages/imagesDatabase';
 
 const App: FC<{}> = () => {
   const [userAuthenticated, setUserAuthenticated] = useState<boolean>(
@@ -48,6 +49,11 @@ const App: FC<{}> = () => {
         ),
         requiresAuth: true,
       },
+      {
+        path: '/images',
+        component: <ImagesDatabase />,
+        requiresAuth: true,
+      },
     ];
 
     const newRoutes = routes.reduce((acc, curr: RouteI) => {
@@ -67,7 +73,7 @@ const App: FC<{}> = () => {
       <Switch>
         {newRoutes.map(({ path, component }, index) => {
           return (
-            <Route key={index} {...{ path }}>
+            <Route key={index} exact {...{ path }}>
               {component}
             </Route>
           );
