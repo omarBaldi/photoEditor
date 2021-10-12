@@ -4,10 +4,23 @@
   min-height: 100vh;
 
   .titleRow {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
     margin-bottom: 4rem;
-    text-align: end;
+    .goBackWrapper {
+      > a {
+        text-decoration: none;
+
+        > span {
+          font-size: 2.5em;
+          color: #272044;
+          opacity: 70%;
+        }
+      }
+    }
     .title {
-      color: '#272044';
+      color: #272044;
       font-size: 2.5em;
     }
   }

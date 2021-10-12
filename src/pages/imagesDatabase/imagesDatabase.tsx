@@ -1,5 +1,6 @@
 import { FC, useMemo, useState } from 'react';
 import { useSelector } from 'react-redux';
+import { Link } from 'react-router-dom';
 import { rootReducersType } from '../../redux/reducers';
 import { getImagesURLFromDatabase } from '../../utils/firebaseFunctions';
 import Styles from './imagesDatabase.module.scss';
@@ -42,6 +43,11 @@ const ImagesDatabase: FC<{}> = (): JSX.Element => {
   return (
     <div className={Styles.imagesPageWrapper}>
       <div className={Styles.titleRow}>
+        <div className={Styles.goBackWrapper}>
+          <Link to='/'>
+            <span>🔙</span>
+          </Link>
+        </div>
         <h2 className={Styles.title}>Images 📷</h2>
       </div>
       <div className={Styles.imagesGrid}>
