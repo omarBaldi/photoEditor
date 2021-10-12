@@ -1,0 +1,29 @@
+.imagesPageWrapper {
+  padding: 4rem 7rem;
+  background-color: '#ececec';
+  min-height: 100vh;
+
+  .titleRow {
+    margin-bottom: 4rem;
+    text-align: end;
+    .title {
+      color: '#272044';
+      font-size: 2.5em;
+    }
+  }
+
+  .imagesGrid {
+    column-count: 3;
+    column-gap: 2rem;
+    .imageWrapper {
+      display: grid;
+      grid-template-rows: 1fr auto;
+      margin-bottom: 1rem;
+      break-inside: avoid;
+      .image {
+        grid-row: 1 / -1;
+        grid-column: 1;
+      }
+    }
+  }
+}
