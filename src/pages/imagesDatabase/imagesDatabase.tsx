@@ -12,6 +12,15 @@ const ImagesDatabase: FC<{}> = (): JSX.Element => {
 
   const [imagesDOMElements, setImagesDOMElements] = useState<JSX.Element[]>([]);
 
+  /* 
+    TODO
+
+    - Create object with the following variables:
+      - Loading: false (boolean)
+      - Results: [] (array)
+      - error: false (boolean) - test edge case
+  */
+
   const renderImagesDOM = async (
     getURLS: () => Promise<
       {
