@@ -5,6 +5,12 @@
     padding: 0.5rem 0 2rem;
 
     > nav {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      .hamburgerButton {
+        cursor: pointer;
+      }
       > ul {
         display: flex;
         align-items: center;

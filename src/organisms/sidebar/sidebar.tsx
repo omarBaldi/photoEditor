@@ -12,8 +12,12 @@ import { uploadImagetoFirebase } from '../../utils/firebaseFunctions';
 import { Swiper, SwiperSlide } from 'swiper/react';
 import 'swiper/swiper-bundle.min.css';
 import 'swiper/swiper.min.css';
+import { SidebarProps } from '.';
 
-const Sidebar: FC<{}> = (): JSX.Element | null => {
+const Sidebar: FC<SidebarProps> = ({
+  showSidebarmenu,
+  closeSidebarCallback,
+}: SidebarProps): JSX.Element | null => {
   const dispatch = useDispatch();
   const {
     updateFilterValue,
@@ -22,7 +26,7 @@ const Sidebar: FC<{}> = (): JSX.Element | null => {
     toggleImageReadyForDownload,
     toggleImageUploadedState,
   } = bindActionCreators(AllActionCreators, dispatch);
-  const { imageFilters, currentImageSrc, downloadImageSrc } = useSelector(
+  const { imageFilters, downloadImageSrc } = useSelector(
     (state: rootReducersType) => state.filters
   );
 
@@ -57,11 +61,32 @@ const Sidebar: FC<{}> = (): JSX.Element | null => {
     }
   };
 
+  const renderCloseSidebarMenuButton = () => {
+    return (
+      <div
+        style={{
+          position: 'absolute',
+          top: '1rem',
+          right: '2rem',
+          cursor: 'pointer',
+        }}
+        onClick={closeSidebarCallback}
+      >
+        🔙
+      </div>
+    );
+  };
+
   return (
-    <div className={Styles.sidebarContainer}>
+    <div
+      className={`${Styles.sidebarContainer} ${
+        showSidebarmenu ? Styles.showSidebar : ''
+      }`}
+    >
       <div className={Styles.sidebarSubContainer}>
-        {currentImageSrc && (
+        {
           <>
+            {renderCloseSidebarMenuButton()}
             {renderFilterElements()}
             <div className={Styles.buttonContainer}>
               <div className={Styles.buttons}>
@@ -117,7 +142,7 @@ const Sidebar: FC<{}> = (): JSX.Element | null => {
               </div>
             </div>
           </>
-        )}
+        }
       </div>
     </div>
   );

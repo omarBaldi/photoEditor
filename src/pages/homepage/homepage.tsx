@@ -1,4 +1,4 @@
-import { FC, useRef } from 'react';
+import { FC, useRef, useState } from 'react';
 import { Sidebar } from '../../organisms/sidebar';
 import { Image } from '../../molecules/image';
 import Style from './homepage.module.scss';
@@ -29,13 +29,27 @@ const Homepage: FC<HomepageProps> = ({
     (state: rootReducersType) => state.filters
   );
   const { handleLoadFile } = bindActionCreators(AllActionCreators, dispatch);
-  const headerRef = useRef<HTMLHeadElement>(null);
+  //const sidebarRef = useRef<HTMLDivElement>(null);
+  const [sidebarOpen, setSidebarOpen] = useState<boolean>(false);
+
+  const handleHamburgerClick = () => setSidebarOpen((prevState) => !prevState);
 
   const elementsDOM = {
     renderHeader: () => {
       return (
-        <header className={Style.header} ref={headerRef}>
+        <header className={Style.header}>
           <nav>
+            {currentImageSrc ? (
+              <div
+                className={Style.hamburgerButton}
+                onClick={handleHamburgerClick}
+              >
+                Open filters
+              </div>
+            ) : (
+              <div>.</div>
+            )}
+
             <ul>
               <li>
                 <Link to='/images'>See images</Link>
@@ -56,20 +70,15 @@ const Homepage: FC<HomepageProps> = ({
     },
     renderMainContent: () => {
       return (
-        <section className={Style.mainContent}>
-          <Sidebar />
-
-          <div
-            style={{
-              height: '100%',
-              display: 'flex',
-              justifyContent: 'center',
-              alignItems: 'center',
-            }}
-          >
-            <Image />
-          </div>
-        </section>
+        <div
+          style={{
+            display: 'flex',
+            justifyContent: 'flex-end',
+            alignItems: 'center',
+          }}
+        >
+          <Image />
+        </div>
       );
     },
     renderMessageImageNotSelected: () => {
@@ -95,11 +104,22 @@ const Homepage: FC<HomepageProps> = ({
         </div>
       );
     },
+    renderSidebar: () => {
+      return (
+        <Sidebar
+          {...{
+            showSidebarmenu: sidebarOpen,
+            closeSidebarCallback: handleHamburgerClick,
+          }}
+        />
+      );
+    },
   };
 
   return (
     <div className={Style.mainContainer}>
       {elementsDOM.renderHeader()}
+      {currentImageSrc && elementsDOM.renderSidebar()}
       {currentImageSrc
         ? elementsDOM.renderMainContent()
         : elementsDOM.renderMessageImageNotSelected()}
