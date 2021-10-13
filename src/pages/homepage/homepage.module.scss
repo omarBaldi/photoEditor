@@ -1,8 +1,8 @@
 .mainContainer {
-  padding: 4rem 7rem;
+  padding: 2rem 7rem;
 
   .header {
-    padding: 0.5rem 2rem;
+    padding: 0.5rem 0 2rem;
 
     > nav {
       > ul {
@@ -10,10 +10,10 @@
         align-items: center;
         justify-content: flex-end;
         > li {
-          margin-left: 1rem;
-          &:last-child {
-            > button {
-              margin: 0;
+          margin-left: 2rem;
+          &:first-child {
+            > a {
+              color: #385170;
             }
           }
         }
@@ -23,9 +23,9 @@
 
   .mainContent {
     display: grid;
-    grid-template-columns: 500px 1fr;
+    grid-template-columns: 450px 1fr;
     max-height: calc(100vh - 12rem);
     min-height: calc(100vh - 12rem);
-    overflow-y: auto;
+    overflow: hidden;
   }
 }

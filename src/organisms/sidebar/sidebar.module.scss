@@ -1,15 +1,21 @@
 .sidebarContainer {
   background-color: #222831;
   color: #ffff;
-  padding: 3rem;
+  position: relative;
   height: 100%;
-  .buttonContainer {
-    display: flex;
-    justify-content: center;
-    .buttons {
+  overflow: auto;
+  .sidebarSubContainer {
+    padding: 3rem;
+    position: absolute;
+    width: 100%;
+    .buttonContainer {
       display: flex;
-      flex-direction: column;
-      width: 100%;
+      justify-content: center;
+      .buttons {
+        display: flex;
+        flex-direction: column;
+        width: 100%;
+      }
     }
   }
 }

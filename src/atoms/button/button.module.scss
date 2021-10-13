@@ -3,11 +3,10 @@
   outline: none;
   background-color: transparent;
   border: 1px solid #ffff;
-  //border-radius: 30px;
+  border-radius: 25px;
   color: #ffff;
-  text-transform: uppercase;
-  margin-top: 2rem;
   cursor: pointer;
+
   .download {
     text-decoration: none;
     color: inherit;
@@ -16,15 +15,17 @@
     padding: 0.5rem 1rem;
   }
   &.buttonMedium {
-    padding: 1rem 3rem;
+    padding: 0.8rem 3rem;
   }
   &.buttonLarge {
     padding: 2rem 4rem;
   }
   &.primaryButton {
-    background-color: #ffff;
-    color: #222831;
+    background-color: #385170;
+    color: #9fd3c7;
   }
   &.secondaryButton {
+    background-color: #9fd3c7;
+    color: #385170;
   }
 }

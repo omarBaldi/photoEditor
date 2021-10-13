@@ -4,12 +4,13 @@ import { Image } from '../../molecules/image';
 import Style from './homepage.module.scss';
 //import { getAuth, signOut } from 'firebase/auth'; //create file in firebase and export every utils instead of repeating importing
 import { HomepageProps } from '.';
-import { useDispatch } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 import { bindActionCreators } from 'redux';
 import { AllActionCreators } from '../../redux/action-creators';
 import { Link } from 'react-router-dom';
 import { Button } from '../../atoms/button';
-import { ButtonCategory } from '../../atoms/button/dto';
+import { ButtonCategory, ButtonSize } from '../../atoms/button/dto';
+import { rootReducersType } from '../../redux/reducers';
 
 const Homepage: FC<HomepageProps> = ({
   signUserOutCallback,
@@ -24,59 +25,84 @@ const Homepage: FC<HomepageProps> = ({
   }; */
 
   const dispatch = useDispatch();
+  const { currentImageSrc } = useSelector(
+    (state: rootReducersType) => state.filters
+  );
   const { handleLoadFile } = bindActionCreators(AllActionCreators, dispatch);
   const headerRef = useRef<HTMLHeadElement>(null);
 
-  return (
-    <div className={Style.mainContainer}>
-      <header className={Style.header} ref={headerRef}>
-        <nav>
-          <ul>
-            <li>
-              <Link to='/images'>Images</Link>
-            </li>
-            <li>
-              <Button
-                {...{
-                  labelText: 'Logout',
-                  category: ButtonCategory.PRIMARY,
-                  callbackFunc: () => console.log('Loggin user out'),
-                }}
-              />
-            </li>
-          </ul>
-        </nav>
-      </header>
-
-      <section className={Style.mainContent}>
-        <Sidebar />
-
-        <div
-          style={{
-            position: 'relative',
-            backgroundColor: '#c1c0b9',
-            height: '100%',
-            display: 'flex',
-            flexDirection: 'column',
-          }}
-        >
-          <Image />
-
-          <input
-            type='file'
-            accept='image/*'
-            onChange={handleLoadFile}
-            className={Style.inputFile}
-          />
+  const elementsDOM = {
+    renderHeader: () => {
+      return (
+        <header className={Style.header} ref={headerRef}>
+          <nav>
+            <ul>
+              <li>
+                <Link to='/images'>See images</Link>
+              </li>
+              <li>
+                <Button
+                  {...{
+                    labelText: 'Logout',
+                    category: ButtonCategory.PRIMARY,
+                    callbackFunc: () => console.log('Loggin user out'),
+                  }}
+                />
+              </li>
+            </ul>
+          </nav>
+        </header>
+      );
+    },
+    renderMainContent: () => {
+      return (
+        <section className={Style.mainContent}>
+          <Sidebar />
 
           <div
             style={{
-              border: '1px solid',
-              maxHeight: '200px',
+              height: '100%',
+              display: 'flex',
+              justifyContent: 'center',
+              alignItems: 'center',
             }}
-          ></div>
+          >
+            <Image />
+          </div>
+        </section>
+      );
+    },
+    renderMessageImageNotSelected: () => {
+      return (
+        <div
+          style={{
+            paddingTop: '3rem',
+            display: 'flex',
+            flexDirection: 'column',
+            justifyContent: 'center',
+            alignItems: 'center',
+          }}
+        >
+          <h1>Select an image to start using this photo editor! 👇</h1>
+          <div>
+            <input
+              type='file'
+              accept='image/*'
+              onChange={handleLoadFile}
+              className={Style.inputFile}
+            />
+          </div>
         </div>
-      </section>
+      );
+    },
+  };
+
+  return (
+    <div className={Style.mainContainer}>
+      {elementsDOM.renderHeader()}
+      {currentImageSrc
+        ? elementsDOM.renderMainContent()
+        : elementsDOM.renderMessageImageNotSelected()}
     </div>
   );
 };

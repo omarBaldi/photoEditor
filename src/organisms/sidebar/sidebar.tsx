@@ -59,66 +59,66 @@ const Sidebar: FC<{}> = (): JSX.Element | null => {
 
   return (
     <div className={Styles.sidebarContainer}>
-      {currentImageSrc ? (
-        <>
-          {renderFilterElements()}
-          <div className={Styles.buttonContainer}>
-            <div className={Styles.buttons}>
-              {/* 
+      <div className={Styles.sidebarSubContainer}>
+        {currentImageSrc && (
+          <>
+            {renderFilterElements()}
+            <div className={Styles.buttonContainer}>
+              <div className={Styles.buttons}>
+                {/* 
                  Render cancel filters button only if the currentFilters 
                  values are different from the original array (src/picture/filter.ts).
                  Use "some" built-in Js property 
                */}
 
-              <Button
-                {...{
-                  labelText: 'Cancel filters',
-                  callbackFunc: resetFilters,
-                  category: ButtonCategory.SECONDARY,
-                }}
-              />
-
-              <Button
-                {...{
-                  labelText: 'Remove image',
-                  callbackFunc: removeCurrentImage,
-                  category: ButtonCategory.SECONDARY,
-                }}
-              />
-
-              {!downloadImageSrc ? (
                 <Button
                   {...{
-                    labelText: 'Prepare image for download',
-                    callbackFunc: () => toggleImageReadyForDownload(true),
+                    labelText: 'Cancel filters',
+                    callbackFunc: resetFilters,
                     category: ButtonCategory.SECONDARY,
                   }}
                 />
-              ) : (
-                <Button
-                  {...{
-                    labelText: 'Download image now',
-                    downloadSrc: downloadImageSrc,
-                    category: ButtonCategory.SECONDARY,
-                  }}
-                />
-              )}
 
-              {downloadImageSrc && (
                 <Button
                   {...{
-                    labelText: 'Upload image',
-                    callbackFunc: handleUploadImageRequest,
+                    labelText: 'Remove image',
+                    callbackFunc: removeCurrentImage,
                     category: ButtonCategory.SECONDARY,
                   }}
                 />
-              )}
+
+                {!downloadImageSrc ? (
+                  <Button
+                    {...{
+                      labelText: 'Prepare image for download',
+                      callbackFunc: () => toggleImageReadyForDownload(true),
+                      category: ButtonCategory.SECONDARY,
+                    }}
+                  />
+                ) : (
+                  <Button
+                    {...{
+                      labelText: 'Download image now',
+                      downloadSrc: downloadImageSrc,
+                      category: ButtonCategory.SECONDARY,
+                    }}
+                  />
+                )}
+
+                {downloadImageSrc && (
+                  <Button
+                    {...{
+                      labelText: 'Upload image',
+                      callbackFunc: handleUploadImageRequest,
+                      category: ButtonCategory.SECONDARY,
+                    }}
+                  />
+                )}
+              </div>
             </div>
-          </div>
-        </>
-      ) : (
-        <div>Filters are not avilable! Select an image first! - </div>
-      )}
+          </>
+        )}
+      </div>
     </div>
   );
 };
