@@ -16,3 +16,11 @@ img {
   max-width: 100%;
   display: block;
 }
+
+li {
+  list-style: none;
+}
+
+a {
+  text-decoration: none;
+}

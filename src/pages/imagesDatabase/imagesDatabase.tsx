@@ -25,12 +25,19 @@ const ImagesDatabase: FC<{}> = (): JSX.Element => {
         ({ imageDownloadSrc, name: imageName }, index: number) => {
           return (
             <div key={index} className={Styles.imageWrapper}>
-              <img
-                src={imageDownloadSrc}
-                alt=''
-                className={Styles.image}
-                title={imageName}
-              />
+              <a
+                href={imageDownloadSrc}
+                download
+                target='_blank'
+                rel='noreferrer'
+              >
+                <img
+                  src={imageDownloadSrc}
+                  alt=''
+                  className={Styles.image}
+                  title={imageName}
+                />
+              </a>
             </div>
           );
         }

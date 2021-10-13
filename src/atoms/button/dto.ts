@@ -9,22 +9,6 @@ export enum ButtonCategory {
   SECONDARY = 2,
 }
 
-/* interface ButtonCommonData {
-  labelText: string;
-  size?: ButtonSize;
-  category?: ButtonCategory;
-}
-export interface ButtonDownload extends ButtonCommonData {
-  downloadSrc: string;
-  callbackFunc: never;
-}
-export interface ButtonAction extends ButtonCommonData {
-  downloadSrc: never;
-  callbackFunc?: () => void;
-}
-
-type ButtonProps = ButtonDownload | ButtonAction; */
-
 type ButtonProps = {
   labelText: string;
   size?: ButtonSize;

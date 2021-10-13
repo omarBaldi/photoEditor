@@ -1,5 +1,31 @@
 .mainContainer {
-  display: grid;
-  grid-template-columns: 500px 1fr;
-  height: 100vh;
+  padding: 4rem 7rem;
+
+  .header {
+    padding: 0.5rem 2rem;
+
+    > nav {
+      > ul {
+        display: flex;
+        align-items: center;
+        justify-content: flex-end;
+        > li {
+          margin-left: 1rem;
+          &:last-child {
+            > button {
+              margin: 0;
+            }
+          }
+        }
+      }
+    }
+  }
+
+  .mainContent {
+    display: grid;
+    grid-template-columns: 500px 1fr;
+    max-height: calc(100vh - 12rem);
+    min-height: calc(100vh - 12rem);
+    overflow-y: auto;
+  }
 }
