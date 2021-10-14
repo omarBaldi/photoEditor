@@ -2,66 +2,68 @@ import { FilterRangeProps } from '../../molecules/filter-range';
 import { initializeFilterValues } from '../../utils/filters';
 
 const filterReducerInitialState: {
-  imageFilters: FilterRangeProps[];
-  currentImageSrc: string;
-  downloadImageSrc: string;
-  imageDOMElement: HTMLImageElement | null;
-  isImageReadyForDownload: boolean;
-  imageUploaded: boolean;
+	imageFilters: FilterRangeProps[];
+	currentImageSrc: string;
+	downloadImageSrc: string;
+	imageDOMElement: HTMLImageElement | null;
+	isImageReadyForDownload: boolean;
+	imageUploaded: boolean;
+	filtersChanged: boolean;
 } = {
-  imageFilters: initializeFilterValues(),
-  currentImageSrc: '',
-  downloadImageSrc: '',
-  imageDOMElement: null,
-  isImageReadyForDownload: false,
-  imageUploaded: false,
+	imageFilters: initializeFilterValues(),
+	currentImageSrc: '',
+	downloadImageSrc: '',
+	imageDOMElement: null,
+	isImageReadyForDownload: false,
+	imageUploaded: false,
+	filtersChanged: false,
 };
 
 export enum FilterReducerTypes {
-  UPDATE_FILTER = 1,
-  RESET_FILTERS = 2,
-  UPDATE_SRC_IMAGE = 3,
-  DOWNLOAD_IMAGE = 4,
-  IMAGE_UPLOADED = 5,
-  REMOVE_IMAGE = 6,
-  UPDATE_IMAGE_DOM = 7,
-  READY_FOR_DOWNLOAD = 8,
+	UPDATE_FILTER = 1,
+	RESET_FILTERS = 2,
+	UPDATE_SRC_IMAGE = 3,
+	DOWNLOAD_IMAGE = 4,
+	IMAGE_UPLOADED = 5,
+	REMOVE_IMAGE = 6,
+	UPDATE_IMAGE_DOM = 7,
+	READY_FOR_DOWNLOAD = 8,
 }
 
 interface UpdateFilterI {
-  type: FilterReducerTypes.UPDATE_FILTER;
-  payload: { name: string; value: string };
+	type: FilterReducerTypes.UPDATE_FILTER;
+	payload: { name: string; value: string };
 }
 
 interface ResetFiltersI {
-  type: FilterReducerTypes.RESET_FILTERS;
+	type: FilterReducerTypes.RESET_FILTERS;
 }
 
 interface SetPictureI {
-  type: FilterReducerTypes.UPDATE_SRC_IMAGE;
-  payload: any;
+	type: FilterReducerTypes.UPDATE_SRC_IMAGE;
+	payload: any;
 }
 
 interface DownloadImageI {
-  type: FilterReducerTypes.DOWNLOAD_IMAGE;
-  payload: string;
+	type: FilterReducerTypes.DOWNLOAD_IMAGE;
+	payload: string;
 }
 
 interface ImageUploadedI {
-  type: FilterReducerTypes.IMAGE_UPLOADED;
-  payload: boolean;
+	type: FilterReducerTypes.IMAGE_UPLOADED;
+	payload: boolean;
 }
 interface RemoveImageI {
-  type: FilterReducerTypes.REMOVE_IMAGE;
+	type: FilterReducerTypes.REMOVE_IMAGE;
 }
 interface UpdateImageElementDOMI {
-  type: FilterReducerTypes.UPDATE_IMAGE_DOM;
-  payload: HTMLImageElement;
+	type: FilterReducerTypes.UPDATE_IMAGE_DOM;
+	payload: HTMLImageElement;
 }
 
 interface ToggleReadyForDownloadI {
-  type: FilterReducerTypes.READY_FOR_DOWNLOAD;
-  payload: boolean;
+	type: FilterReducerTypes.READY_FOR_DOWNLOAD;
+	payload: boolean;
 }
 
 /* 
@@ -77,70 +79,79 @@ interface ToggleReadyForDownloadI {
 */
 
 export type FilterAction =
-  | UpdateFilterI
-  | ResetFiltersI
-  | SetPictureI
-  | DownloadImageI
-  | ImageUploadedI
-  | RemoveImageI
-  | UpdateImageElementDOMI
-  | ToggleReadyForDownloadI;
+	| UpdateFilterI
+	| ResetFiltersI
+	| SetPictureI
+	| DownloadImageI
+	| ImageUploadedI
+	| RemoveImageI
+	| UpdateImageElementDOMI
+	| ToggleReadyForDownloadI;
 
 export const filterReducer = (
-  state = filterReducerInitialState,
-  action: FilterAction
+	state = filterReducerInitialState,
+	action: FilterAction
 ) => {
-  switch (action.type) {
-    case FilterReducerTypes.UPDATE_FILTER:
-      const { name: currentFilterName, value: currentFilterValue } =
-        action.payload;
+	switch (action.type) {
+		case FilterReducerTypes.UPDATE_FILTER:
+			const { name: currentFilterName, value: currentFilterValue } =
+				action.payload;
 
-      const updatedFilterValues = state.imageFilters.reduce(
-        (acc, curr: FilterRangeProps) => {
-          curr.rangeName === currentFilterName &&
-            (curr.currentValue = Number(currentFilterValue));
-          return [...acc, curr];
-        },
-        [] as FilterRangeProps[]
-      );
+			const updatedFilterValues = state.imageFilters.reduce(
+				(acc, curr: FilterRangeProps) => {
+					curr.rangeName === currentFilterName &&
+						(curr.currentValue = Number(currentFilterValue));
+					return [...acc, curr];
+				},
+				[] as FilterRangeProps[]
+			);
 
-      return { ...state, imageFilters: updatedFilterValues };
+			return {
+				...state,
+				imageFilters: updatedFilterValues,
+				filtersChanged: !state.filtersChanged ? true : state.filtersChanged,
+			};
 
-    case FilterReducerTypes.RESET_FILTERS:
-      return { ...state, imageFilters: initializeFilterValues() };
+		case FilterReducerTypes.RESET_FILTERS:
+			return {
+				...state,
+				imageFilters: initializeFilterValues(),
+				filtersChanged: false,
+			};
 
-    case FilterReducerTypes.UPDATE_SRC_IMAGE:
-      const urlFileUploaded: string = URL.createObjectURL(action.payload);
-      return {
-        ...state,
-        currentImageSrc: urlFileUploaded,
-        downloadImageSrc: '',
-        isImageReadyForDownload: false,
-        imageUploaded: false,
-        imageFilters: initializeFilterValues(),
-      };
+		case FilterReducerTypes.UPDATE_SRC_IMAGE:
+			const urlFileUploaded: string = URL.createObjectURL(action.payload);
+			return {
+				...state,
+				currentImageSrc: urlFileUploaded,
+				downloadImageSrc: '',
+				isImageReadyForDownload: false,
+				imageUploaded: false,
+				imageFilters: initializeFilterValues(),
+			};
 
-    case FilterReducerTypes.REMOVE_IMAGE:
-      return {
-        ...state,
-        currentImageSrc: '',
-        downloadImageSrc: '',
-        isImageReadyForDownload: false,
-      };
+		case FilterReducerTypes.REMOVE_IMAGE:
+			return {
+				...state,
+				currentImageSrc: '',
+				downloadImageSrc: '',
+				isImageReadyForDownload: false,
+				filtersChanged: false,
+			};
 
-    case FilterReducerTypes.DOWNLOAD_IMAGE:
-      return { ...state, downloadImageSrc: action.payload };
+		case FilterReducerTypes.DOWNLOAD_IMAGE:
+			return { ...state, downloadImageSrc: action.payload };
 
-    case FilterReducerTypes.UPDATE_IMAGE_DOM:
-      return { ...state, imageDOMElement: action.payload };
+		case FilterReducerTypes.UPDATE_IMAGE_DOM:
+			return { ...state, imageDOMElement: action.payload };
 
-    case FilterReducerTypes.READY_FOR_DOWNLOAD:
-      return { ...state, isImageReadyForDownload: action.payload };
+		case FilterReducerTypes.READY_FOR_DOWNLOAD:
+			return { ...state, isImageReadyForDownload: action.payload };
 
-    case FilterReducerTypes.IMAGE_UPLOADED:
-      return { ...state, imageUploaded: action.payload };
+		case FilterReducerTypes.IMAGE_UPLOADED:
+			return { ...state, imageUploaded: action.payload };
 
-    default:
-      return state;
-  }
+		default:
+			return state;
+	}
 };

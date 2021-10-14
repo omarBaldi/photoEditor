@@ -1,4 +1,4 @@
-import { FC, useRef, useState } from 'react';
+import { FC, useState } from 'react';
 import { Sidebar } from '../../organisms/sidebar';
 import { Image } from '../../molecules/image';
 import Style from './homepage.module.scss';
@@ -9,8 +9,9 @@ import { bindActionCreators } from 'redux';
 import { AllActionCreators } from '../../redux/action-creators';
 import { Link } from 'react-router-dom';
 import { Button } from '../../atoms/button';
-import { ButtonCategory, ButtonSize } from '../../atoms/button/dto';
+import { ButtonCategory } from '../../atoms/button/dto';
 import { rootReducersType } from '../../redux/reducers';
+import { uploadImagetoFirebase } from '../../utils/firebaseFunctions';
 
 const Homepage: FC<HomepageProps> = ({
 	signUserOutCallback,
@@ -25,14 +26,39 @@ const Homepage: FC<HomepageProps> = ({
   }; */
 
 	const dispatch = useDispatch();
-	const { currentImageSrc } = useSelector(
+	const { currentImageSrc, downloadImageSrc, filtersChanged } = useSelector(
 		(state: rootReducersType) => state.filters
 	);
-	const { handleLoadFile } = bindActionCreators(AllActionCreators, dispatch);
+	const {
+		handleLoadFile,
+		resetFilters,
+		removeCurrentImage,
+		toggleImageUploadedState,
+		toggleImageReadyForDownload,
+	} = bindActionCreators(AllActionCreators, dispatch);
+
 	//const sidebarRef = useRef<HTMLDivElement>(null);
 	const [sidebarOpen, setSidebarOpen] = useState<boolean>(false);
 
 	const handleHamburgerClick = () => setSidebarOpen((prevState) => !prevState);
+
+	const handleUploadImageRequest = async (): Promise<void> => {
+		const imageName: string | null = prompt('Choose a name for your image: ');
+
+		/* 
+      TODO: if the name already exists in the database 
+      then warn the user that he has to choose something else 
+    */
+		if (!imageName) return;
+
+		try {
+			await uploadImagetoFirebase(imageName, downloadImageSrc);
+			toggleImageUploadedState(true);
+			alert('Image Uploaded to database!');
+		} catch (err) {
+			alert('Something went wrong during the upload! Try it again!');
+		}
+	};
 
 	const elementsDOM = {
 		renderHeader: () => {
@@ -57,7 +83,7 @@ const Homepage: FC<HomepageProps> = ({
 									{...{
 										labelText: 'Logout',
 										category: ButtonCategory.PRIMARY,
-										callbackFunc: () => console.log('Loggin user out'),
+										callbackFunc: () => console.log('Logging user out'),
 									}}
 								/>
 							</li>
@@ -68,13 +94,61 @@ const Homepage: FC<HomepageProps> = ({
 		},
 		renderMainContent: () => {
 			return (
-				<div
-					style={{
-						display: 'flex',
-						justifyContent: 'flex-end',
-						alignItems: 'center',
-					}}
-				>
+				<div>
+					<div
+						style={{
+							width: '100%',
+							marginBottom: 'rem',
+							display: 'flex',
+							justifyContent: 'flex-end',
+							gap: '1rem',
+						}}
+					>
+						{filtersChanged && (
+							<Button
+								{...{
+									labelText: 'Cancel filters',
+									callbackFunc: resetFilters,
+									category: ButtonCategory.SECONDARY,
+								}}
+							/>
+						)}
+
+						<Button
+							{...{
+								labelText: 'Remove image',
+								callbackFunc: removeCurrentImage,
+								category: ButtonCategory.SECONDARY,
+							}}
+						/>
+
+						{!downloadImageSrc ? (
+							<Button
+								{...{
+									labelText: 'Prepare image for download',
+									callbackFunc: () => toggleImageReadyForDownload(true),
+									category: ButtonCategory.SECONDARY,
+								}}
+							/>
+						) : (
+							<>
+								<Button
+									{...{
+										labelText: 'Upload image',
+										callbackFunc: handleUploadImageRequest,
+										category: ButtonCategory.SECONDARY,
+									}}
+								/>
+								<Button
+									{...{
+										labelText: 'Download image now',
+										downloadSrc: downloadImageSrc,
+										category: ButtonCategory.SECONDARY,
+									}}
+								/>
+							</>
+						)}
+					</div>
 					<Image />
 				</div>
 			);
