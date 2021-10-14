@@ -12,18 +12,20 @@ import { Button } from '../../atoms/button';
 import { ButtonCategory } from '../../atoms/button/dto';
 import { rootReducersType } from '../../redux/reducers';
 import { uploadImagetoFirebase } from '../../utils/firebaseFunctions';
+import { signOut } from '@firebase/auth';
+import { auth } from '../../config/firebaseInitialize';
 
 const Homepage: FC<HomepageProps> = ({
 	signUserOutCallback,
 }: HomepageProps): JSX.Element => {
-	/* const signUserOut = async (): Promise<void> => {
-    try {
-      await signOut(auth);
-      signUserOutCallback?.();
-    } catch (err) {
-      console.log((err as any).message);
-    }
-  }; */
+	const signUserOut = async (): Promise<void> => {
+		try {
+			await signOut(auth);
+			signUserOutCallback?.();
+		} catch (err) {
+			console.log((err as any).message);
+		}
+	};
 
 	const dispatch = useDispatch();
 	const { currentImageSrc, downloadImageSrc, filtersChanged } = useSelector(
@@ -37,7 +39,6 @@ const Homepage: FC<HomepageProps> = ({
 		toggleImageReadyForDownload,
 	} = bindActionCreators(AllActionCreators, dispatch);
 
-	//const sidebarRef = useRef<HTMLDivElement>(null);
 	const [sidebarOpen, setSidebarOpen] = useState<boolean>(false);
 
 	const handleHamburgerClick = () => setSidebarOpen((prevState) => !prevState);
@@ -83,7 +84,7 @@ const Homepage: FC<HomepageProps> = ({
 									{...{
 										labelText: 'Logout',
 										category: ButtonCategory.PRIMARY,
-										callbackFunc: () => console.log('Logging user out'),
+										callbackFunc: signUserOut,
 									}}
 								/>
 							</li>

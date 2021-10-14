@@ -1,0 +1,15 @@
+.loginMainContainer {
+	display: flex;
+	justify-content: center;
+	align-items: center;
+	height: 100vh;
+	background-color: #ececec;
+	.loginSubContainer {
+		max-width: 400px;
+		text-align: center;
+		.loginTitle {
+			font-weight: lighter;
+			margin-bottom: 1rem;
+		}
+	}
+}
