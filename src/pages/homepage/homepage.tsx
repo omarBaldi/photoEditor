@@ -13,9 +13,9 @@ import { ButtonCategory, ButtonSize } from '../../atoms/button/dto';
 import { rootReducersType } from '../../redux/reducers';
 
 const Homepage: FC<HomepageProps> = ({
-  signUserOutCallback,
+	signUserOutCallback,
 }: HomepageProps): JSX.Element => {
-  /* const signUserOut = async (): Promise<void> => {
+	/* const signUserOut = async (): Promise<void> => {
     try {
       await signOut(auth);
       signUserOutCallback?.();
@@ -24,107 +24,105 @@ const Homepage: FC<HomepageProps> = ({
     }
   }; */
 
-  const dispatch = useDispatch();
-  const { currentImageSrc } = useSelector(
-    (state: rootReducersType) => state.filters
-  );
-  const { handleLoadFile } = bindActionCreators(AllActionCreators, dispatch);
-  //const sidebarRef = useRef<HTMLDivElement>(null);
-  const [sidebarOpen, setSidebarOpen] = useState<boolean>(false);
+	const dispatch = useDispatch();
+	const { currentImageSrc } = useSelector(
+		(state: rootReducersType) => state.filters
+	);
+	const { handleLoadFile } = bindActionCreators(AllActionCreators, dispatch);
+	//const sidebarRef = useRef<HTMLDivElement>(null);
+	const [sidebarOpen, setSidebarOpen] = useState<boolean>(false);
 
-  const handleHamburgerClick = () => setSidebarOpen((prevState) => !prevState);
+	const handleHamburgerClick = () => setSidebarOpen((prevState) => !prevState);
 
-  const elementsDOM = {
-    renderHeader: () => {
-      return (
-        <header className={Style.header}>
-          <nav>
-            {currentImageSrc ? (
-              <div
-                className={Style.hamburgerButton}
-                onClick={handleHamburgerClick}
-              >
-                Open filters
-              </div>
-            ) : (
-              <div>.</div>
-            )}
+	const elementsDOM = {
+		renderHeader: () => {
+			return (
+				<header className={Style.header}>
+					<nav>
+						{currentImageSrc && (
+							<div
+								className={Style.hamburgerButton}
+								onClick={handleHamburgerClick}
+							>
+								Open filters
+							</div>
+						)}
 
-            <ul>
-              <li>
-                <Link to='/images'>See images</Link>
-              </li>
-              <li>
-                <Button
-                  {...{
-                    labelText: 'Logout',
-                    category: ButtonCategory.PRIMARY,
-                    callbackFunc: () => console.log('Loggin user out'),
-                  }}
-                />
-              </li>
-            </ul>
-          </nav>
-        </header>
-      );
-    },
-    renderMainContent: () => {
-      return (
-        <div
-          style={{
-            display: 'flex',
-            justifyContent: 'flex-end',
-            alignItems: 'center',
-          }}
-        >
-          <Image />
-        </div>
-      );
-    },
-    renderMessageImageNotSelected: () => {
-      return (
-        <div
-          style={{
-            paddingTop: '3rem',
-            display: 'flex',
-            flexDirection: 'column',
-            justifyContent: 'center',
-            alignItems: 'center',
-          }}
-        >
-          <h1>Select an image to start using this photo editor! 👇</h1>
-          <div>
-            <input
-              type='file'
-              accept='image/*'
-              onChange={handleLoadFile}
-              className={Style.inputFile}
-            />
-          </div>
-        </div>
-      );
-    },
-    renderSidebar: () => {
-      return (
-        <Sidebar
-          {...{
-            showSidebarmenu: sidebarOpen,
-            closeSidebarCallback: handleHamburgerClick,
-          }}
-        />
-      );
-    },
-  };
+						<ul>
+							<li>
+								<Link to='/images'>See images</Link>
+							</li>
+							<li>
+								<Button
+									{...{
+										labelText: 'Logout',
+										category: ButtonCategory.PRIMARY,
+										callbackFunc: () => console.log('Loggin user out'),
+									}}
+								/>
+							</li>
+						</ul>
+					</nav>
+				</header>
+			);
+		},
+		renderMainContent: () => {
+			return (
+				<div
+					style={{
+						display: 'flex',
+						justifyContent: 'flex-end',
+						alignItems: 'center',
+					}}
+				>
+					<Image />
+				</div>
+			);
+		},
+		renderMessageImageNotSelected: () => {
+			return (
+				<div
+					style={{
+						paddingTop: '3rem',
+						display: 'flex',
+						flexDirection: 'column',
+						justifyContent: 'center',
+						alignItems: 'center',
+					}}
+				>
+					<h1>Select an image to start using this photo editor! 👇</h1>
+					<div>
+						<input
+							type='file'
+							accept='image/*'
+							onChange={handleLoadFile}
+							className={Style.inputFile}
+						/>
+					</div>
+				</div>
+			);
+		},
+		renderSidebar: () => {
+			return (
+				<Sidebar
+					{...{
+						showSidebarmenu: sidebarOpen,
+						closeSidebarCallback: handleHamburgerClick,
+					}}
+				/>
+			);
+		},
+	};
 
-  return (
-    <div className={Style.mainContainer}>
-      {elementsDOM.renderHeader()}
-      {currentImageSrc && elementsDOM.renderSidebar()}
-      {currentImageSrc
-        ? elementsDOM.renderMainContent()
-        : elementsDOM.renderMessageImageNotSelected()}
-    </div>
-  );
+	return (
+		<div className={Style.mainContainer}>
+			{elementsDOM.renderHeader()}
+			{currentImageSrc && elementsDOM.renderSidebar()}
+			{currentImageSrc
+				? elementsDOM.renderMainContent()
+				: elementsDOM.renderMessageImageNotSelected()}
+		</div>
+	);
 };
 
 export default Homepage;

@@ -1,37 +1,40 @@
 .mainContainer {
-  padding: 2rem 7rem;
+	padding: 2rem 7rem;
 
-  .header {
-    padding: 0.5rem 0 2rem;
+	.header {
+		padding: 0.5rem 0 2rem;
 
-    > nav {
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      .hamburgerButton {
-        cursor: pointer;
-      }
-      > ul {
-        display: flex;
-        align-items: center;
-        justify-content: flex-end;
-        > li {
-          margin-left: 2rem;
-          &:first-child {
-            > a {
-              color: #385170;
-            }
-          }
-        }
-      }
-    }
-  }
+		> nav {
+			display: flex;
+			justify-content: flex-end;
+			align-items: center;
+			position: relative;
+			.hamburgerButton {
+				position: absolute;
+				left: 0;
+				cursor: pointer;
+			}
+			> ul {
+				display: flex;
+				align-items: center;
+				justify-content: flex-end;
+				> li {
+					margin-left: 2rem;
+					&:first-child {
+						> a {
+							color: #385170;
+						}
+					}
+				}
+			}
+		}
+	}
 
-  .mainContent {
-    display: grid;
-    grid-template-columns: 450px 1fr;
-    max-height: calc(100vh - 12rem);
-    min-height: calc(100vh - 12rem);
-    overflow: hidden;
-  }
+	.mainContent {
+		display: grid;
+		grid-template-columns: 450px 1fr;
+		max-height: calc(100vh - 12rem);
+		min-height: calc(100vh - 12rem);
+		overflow: hidden;
+	}
 }
