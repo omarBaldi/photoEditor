@@ -1,0 +1,17 @@
+.filterCardContainer {
+  text-align: center;
+  flex: 1;
+  padding: 0.5rem;
+  font-size: 1.2em;
+  cursor: pointer;
+  border: 1px solid transparent;
+  transition: all 0.2s ease-in-out;
+  border-radius: 10px;
+  &.isActive {
+    background-color: white;
+    color: #333;
+  }
+  &:hover {
+    border: 1px solid white;
+  }
+}

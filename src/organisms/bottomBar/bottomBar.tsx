@@ -1,16 +1,18 @@
 import { FC, useState } from 'react';
 import { FilterRange, FilterRangeProps } from '../../molecules/filter-range';
-//import Styles from './sidebar.module.scss';
+//import Styles from './BottomBar.module.scss';
 import { useDispatch, useSelector } from 'react-redux';
 import { bindActionCreators } from 'redux';
 import { AllActionCreators } from '../../redux/action-creators';
 import { rootReducersType } from '../../redux/reducers';
-import { SidebarProps } from '.';
+import { BottomBarProps } from '.';
+import { faSun } from '@fortawesome/free-solid-svg-icons';
+import { FilterCard } from '../../molecules/filter-card';
 
-const Sidebar: FC<SidebarProps> = ({
-  showSidebarmenu,
-  closeSidebarCallback,
-}: SidebarProps): JSX.Element | null => {
+const BottomBar: FC<BottomBarProps> = ({
+  showBottomBarmenu,
+  closeBottomBarCallback,
+}: BottomBarProps): JSX.Element | null => {
   const dispatch = useDispatch();
   const { updateFilterValue } = bindActionCreators(AllActionCreators, dispatch);
   const { imageFilters } = useSelector(
@@ -22,7 +24,7 @@ const Sidebar: FC<SidebarProps> = ({
     DEFAULT_FILTER_SELECTED
   );
 
-  /* const renderCloseSidebarMenuButton = () => {
+  /* const renderCloseBottomBarMenuButton = () => {
     return (
       <div
         style={{
@@ -31,7 +33,7 @@ const Sidebar: FC<SidebarProps> = ({
           right: '2rem',
           cursor: 'pointer',
         }}
-        onClick={closeSidebarCallback}
+        onClick={closeBottomBarCallback}
       >
         🔙
       </div>
@@ -42,14 +44,16 @@ const Sidebar: FC<SidebarProps> = ({
     return (imageFilters as FilterRangeProps[]).map(
       ({ labelName, rangeName }, index) => {
         return (
-          /*
-				Whenever a filter icons is clicked update the current filter 
-				rangename and as soon as the user slide on the input range 
-				emit an action thath update the value.
-			*/
-          <div key={index} onClick={() => setCurrentFilterSelected(rangeName)}>
-            <p>{labelName}</p>
-          </div>
+          <FilterCard
+            key={index}
+            {...{
+              label: labelName,
+              icon: faSun,
+              rangeName,
+              isActive: rangeName === currentFilterSelected,
+              filterCardClickCallback: setCurrentFilterSelected,
+            }}
+          />
         );
       }
     );
@@ -82,20 +86,26 @@ const Sidebar: FC<SidebarProps> = ({
         backgroundColor: '#333',
         color: 'white',
         position: 'fixed',
-        bottom: 0,
+        bottom: showBottomBarmenu ? 0 : '-100%',
         left: 0,
         width: '100%',
         zIndex: 20,
       }}
     >
       {/* Render icons for each filter */}
-      <div style={{ display: 'flex', justifyContent: 'space-evenly' }}>
+      <div
+        style={{
+          display: 'flex',
+          justifyContent: 'space-evenly',
+          gap: '1rem',
+        }}
+      >
         {renderFiltersIcons()}
       </div>
       {/* Render input range */}
-      {renderFilterRange()}
+      <div style={{ marginTop: '2rem' }}>{renderFilterRange()}</div>
     </div>
   );
 };
 
-export default Sidebar;
+export default BottomBar;

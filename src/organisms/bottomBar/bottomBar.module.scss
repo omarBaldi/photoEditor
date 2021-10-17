@@ -1,4 +1,4 @@
-.sidebarContainer {
+.BottomBarContainer {
   background-color: #222831;
   color: #ffff;
   height: 100%;
@@ -12,10 +12,10 @@
   //width: 30rem;
   z-index: 10;
   transition: all 0.5s ease-in-out;
-  &.showSidebar {
+  &.showBottomBar {
     //left: 0;
   }
-  .sidebarSubContainer {
+  .BottomBarSubContainer {
     padding: 3rem;
     position: absolute;
     width: 100%;

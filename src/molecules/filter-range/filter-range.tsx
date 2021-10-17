@@ -3,7 +3,6 @@ import FilterRangeProps from './dto';
 import Style from './filter-range.module.scss';
 
 const FilterRange: FC<FilterRangeProps> = ({
-  labelName,
   rangeName,
   minValue,
   maxValue,
@@ -12,9 +11,6 @@ const FilterRange: FC<FilterRangeProps> = ({
 }: FilterRangeProps) => {
   return (
     <div className={Style.filterRangeContainer}>
-      <label className={Style.filterRangeLabel} htmlFor={rangeName}>
-        {labelName}
-      </label>
       <input
         {...{
           type: 'range',

@@ -1,5 +1,5 @@
 import { FC, useState } from 'react';
-import { Sidebar } from '../../organisms/sidebar';
+import { BottomBar } from '../../organisms/bottomBar';
 import { Image } from '../../molecules/image';
 import Style from './homepage.module.scss';
 //import { getAuth, signOut } from 'firebase/auth'; //create file in firebase and export every utils instead of repeating importing
@@ -39,9 +39,10 @@ const Homepage: FC<HomepageProps> = ({
     toggleImageReadyForDownload,
   } = bindActionCreators(AllActionCreators, dispatch);
 
-  const [sidebarOpen, setSidebarOpen] = useState<boolean>(false);
+  const [bottomBarOpen, setBottomBarOpen] = useState<boolean>(false);
 
-  const handleHamburgerClick = () => setSidebarOpen((prevState) => !prevState);
+  const handleHamburgerClick = () =>
+    setBottomBarOpen((prevState) => !prevState);
 
   const handleUploadImageRequest = async (): Promise<void> => {
     const imageName: string | null = prompt('Choose a name for your image: ');
@@ -95,7 +96,7 @@ const Homepage: FC<HomepageProps> = ({
     },
     renderMainContent: () => {
       return (
-        <>
+        <div style={{ minHeight: '150vh' }}>
           <div
             style={{
               width: '100%',
@@ -151,7 +152,7 @@ const Homepage: FC<HomepageProps> = ({
             )}
           </div>
           <Image />
-        </>
+        </div>
       );
     },
     renderMessageImageNotSelected: () => {
@@ -177,12 +178,12 @@ const Homepage: FC<HomepageProps> = ({
         </div>
       );
     },
-    renderSidebar: () => {
+    renderBottomBar: () => {
       return (
-        <Sidebar
+        <BottomBar
           {...{
-            showSidebarmenu: sidebarOpen,
-            closeSidebarCallback: handleHamburgerClick,
+            showBottomBarmenu: bottomBarOpen,
+            closeBottomBarCallback: handleHamburgerClick,
           }}
         />
       );
@@ -192,7 +193,7 @@ const Homepage: FC<HomepageProps> = ({
   return (
     <div className={Style.mainContainer}>
       {elementsDOM.renderHeader()}
-      {currentImageSrc && elementsDOM.renderSidebar()}
+      {currentImageSrc && elementsDOM.renderBottomBar()}
       {currentImageSrc
         ? elementsDOM.renderMainContent()
         : elementsDOM.renderMessageImageNotSelected()}
