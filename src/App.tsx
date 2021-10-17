@@ -7,8 +7,9 @@ import './App.css';
 import { ImagesDatabase } from './pages/imagesDatabase';
 
 const App: FC<{}> = () => {
+  const currentUserData: string | null = localStorage.getItem('currentUser');
   const [userAuthenticated, setUserAuthenticated] = useState<boolean>(
-    false || !!localStorage.getItem('currentUser')
+    !!currentUserData
   );
 
   const renderRoutes = (): JSX.Element => {
